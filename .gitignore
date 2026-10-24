@@ -1,0 +1,8 @@
+/target
+/build
+*.dylib
+*.so
+*.dll
+node_modules
+*.bak
+.DS_Store
