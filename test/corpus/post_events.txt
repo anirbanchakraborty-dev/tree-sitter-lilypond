@@ -155,3 +155,95 @@ Directions, text, fingering, string numbers, tremolo and a bar check
       duration: (duration
         (number)))
     (bar_check)))
+
+================================================================================
+A direction before a tie, slur, beam or hairpin
+================================================================================
+
+{ c'4^( d' e'_( f') g') c^~ c <g c>-[ d] es8^\( f\) c8^>_( d) c4^\< d' e'\! }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)
+        (octave))
+      duration: (duration
+        (number)))
+    (slur_start)
+    (note
+      pitch: (pitch
+        (note_name)
+        (octave)))
+    (note
+      pitch: (pitch
+        (note_name)
+        (octave)))
+    (slur_start)
+    (note
+      pitch: (pitch
+        (note_name)
+        (octave)))
+    (slur_end)
+    (note
+      pitch: (pitch
+        (note_name)
+        (octave)))
+    (slur_end)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (tie)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (chord
+      (note
+        pitch: (pitch
+          (note_name)))
+      (note
+        pitch: (pitch
+          (note_name))))
+    (beam_start)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (beam_end)
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)))
+    (phrasing_slur_start)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (phrasing_slur_end)
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)))
+    (articulation)
+    (slur_start)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (slur_end)
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)))
+    (hairpin)
+    (note
+      pitch: (pitch
+        (note_name)
+        (octave)))
+    (note
+      pitch: (pitch
+        (note_name)
+        (octave)))
+    (hairpin_end)))

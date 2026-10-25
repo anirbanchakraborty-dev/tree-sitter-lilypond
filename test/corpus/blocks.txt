@@ -233,3 +233,21 @@ Output definitions hold property commands
     (note
       pitch: (pitch
         (note_name)))))
+
+================================================================================
+A quoted repeat type
+================================================================================
+
+{ \repeat "volta" 2 { c } }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (repeat
+      type: (string)
+      count: (number))
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name))))))

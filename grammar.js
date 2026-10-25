@@ -51,17 +51,49 @@ const metronomeMark = ($) => seq(
 // What follows the direction of an articulation: a shorthand or a command.
 const articulationMark = ($) => choice('.', '-', '^', '>', '_', '!', '+', $.command);
 
+// Ties, slurs, beams, ligatures and hairpins, each with its text. Any of them
+// may follow a direction, as in `c^(`, and none needs one.
+const SPANNERS = {
+  tie: '~',
+  slur_start: '(',
+  slur_end: ')',
+  phrasing_slur_start: '\\(',
+  phrasing_slur_end: '\\)',
+  beam_start: '[',
+  beam_end: ']',
+  ligature_start: '\\[',
+  ligature_end: '\\]',
+  hairpin: choice('\\<', '\\>'),
+  hairpin_end: '\\!',
+};
+
+// The spanners figure mode keeps, since it reads `[`, `]` and `\!` as parts
+// of a figure.
+const FIGURE_SPANNERS = Object.keys(SPANNERS).filter(
+  (name) => !['beam_start', 'beam_end', 'hairpin_end'].includes(name),
+);
+
+// A rule for each spanner named, called `prefix` and the spanner's name, that
+// takes a direction before it or none. `direction` gives the directions
+// allowed, from `$`.
+const spannerRules = (prefix, direction, names) => Object.fromEntries(names.map(
+  (name) => [prefix + name, $ => seq(optional(direction($)), SPANNERS[name])],
+));
+
 // The post-events that take a direction, in a mode that allows only some of
-// the directions. Each is a hidden rule of its own, `_chord_articulation` and
-// so on, because an alias of a bare sequence would name each of its parts.
-const directedPostEvents = ($, mode) => [
+// the directions: the spanners named, and the articulation, fingering and
+// text script. Each is a hidden rule of its own, `_chord_articulation` and so
+// on, because an alias of a bare sequence would name each of its parts.
+const directedPostEvents = ($, mode, spanners = Object.keys(SPANNERS)) => [
+  ...spanners.map((name) => alias($[`_${mode}_${name}`], $[name])),
   alias($[`_${mode}_articulation`], $.articulation),
   alias($[`_${mode}_fingering`], $.fingering),
   alias($[`_${mode}_text_script`], $.text_script),
 ];
 
 // The rules `directedPostEvents` names, for one mode and its directions.
-const directedPostEventRules = (mode, direction) => ({
+const directedPostEventRules = (mode, direction, spanners = Object.keys(SPANNERS)) => ({
+  ...spannerRules(`_${mode}_`, () => direction, spanners),
   [`_${mode}_articulation`]: $ => seq(direction, articulationMark($)),
   [`_${mode}_fingering`]: $ => seq(direction, $.number),
   [`_${mode}_text_script`]: $ => seq(direction, choice($.string, $.markup)),
@@ -187,6 +219,9 @@ export default grammar({
       $.scheme,
       $.context_definition,
       $.command,
+      // A grob or context name after a command: `\accidentalStyle Score.modern`.
+      $._identifier,
+      alias($._dotted_identifier, $.dotted_name),
       $.override,
       $.set,
       $.revert,
@@ -213,6 +248,9 @@ export default grammar({
       $.revert,
       $.unset,
       $.command,
+      // A grob name after a command: `\omit TimeSignature`.
+      $._identifier,
+      alias($._dotted_identifier, $.dotted_name),
       $.scheme,
     ),
 
@@ -278,7 +316,10 @@ export default grammar({
       seq($._value_end, repeat($.add_lyrics)),
       $.string,
       $.scheme,
-      seq($.number, optional(alias($._unit, $.command))),
+      seq(
+        choice($.number, alias($._negative_number, $.number)),
+        optional(alias($._unit, $.command)),
+      ),
       seq(
         $._value_start,
         repeat(choice($._music_argument, $.add_lyrics)),
@@ -389,12 +430,15 @@ export default grammar({
       $.multi_measure_rest,
       $.chord_repetition,
       $.chord,
-      // `\time 3/4`.
+      // `\time 3/4`, and `\time 2,2,3 7/8`.
       $.fraction,
+      $.number_list,
       $._post_event,
       $.voice_separator,
       $.command,
       $.dotted_name,
+      // A grob path after a command: `\omit Staff.TimeSignature`.
+      alias($._dotted_identifier, $.dotted_name),
       $.new_context,
       $.override,
       $.set,
@@ -479,7 +523,15 @@ export default grammar({
 
     chord: $ => prec.right(seq(
       '<',
-      repeat(choice($.note, $._post_event)),
+      // A command and its arguments may stand before a note, as in
+      // `<c \tweak Stem.color #red e>`.
+      repeat(choice(
+        $.note,
+        $._post_event,
+        $.command,
+        $.scheme,
+        alias($._dotted_identifier, $.dotted_name),
+      )),
       '>',
       optional(field('duration', $.duration)),
     )),
@@ -517,27 +569,7 @@ export default grammar({
       $.text_script,
     ),
 
-    tie: _ => '~',
-
-    slur_start: _ => '(',
-
-    slur_end: _ => ')',
-
-    phrasing_slur_start: _ => '\\(',
-
-    phrasing_slur_end: _ => '\\)',
-
-    beam_start: _ => '[',
-
-    beam_end: _ => ']',
-
-    ligature_start: _ => '\\[',
-
-    ligature_end: _ => '\\]',
-
-    hairpin: _ => choice('\\<', '\\>'),
-
-    hairpin_end: _ => '\\!',
+    ...spannerRules('', $ => $._direction, Object.keys(SPANNERS)),
 
     _direction: _ => choice('-', '^', '_'),
 
@@ -599,6 +631,8 @@ export default grammar({
     _property_value: $ => choice(
       $.string,
       $.number,
+      alias($._negative_number, $.number),
+      $.number_list,
       $.scheme,
       $.markup,
       $.markup_list,
@@ -608,7 +642,7 @@ export default grammar({
     // The music a repeat applies to follows it as the next sibling.
     repeat: $ => seq(
       '\\repeat',
-      field('type', $._identifier),
+      field('type', choice($._identifier, $.string)),
       field('count', $.number),
     ),
 
@@ -724,20 +758,7 @@ export default grammar({
 
     _chord_alternative: $ => seq('\\alternative', '{', repeat($._chord_item), '}'),
 
-    _chord_post_event: $ => choice(
-      $.tie,
-      $.slur_start,
-      $.slur_end,
-      $.phrasing_slur_start,
-      $.phrasing_slur_end,
-      $.beam_start,
-      $.beam_end,
-      $.ligature_start,
-      $.ligature_end,
-      $.hairpin,
-      $.hairpin_end,
-      ...directedPostEvents($, 'chord'),
-    ),
+    _chord_post_event: $ => choice(...directedPostEvents($, 'chord')),
 
     ...directedPostEventRules('chord', choice('^', '_')),
 
@@ -799,19 +820,11 @@ export default grammar({
     _figure_alternative: $ => seq('\\alternative', '{', repeat($._figure_item), '}'),
 
     _figure_post_event: $ => choice(
-      $.tie,
-      $.slur_start,
-      $.slur_end,
-      $.phrasing_slur_start,
-      $.phrasing_slur_end,
-      $.ligature_start,
-      $.ligature_end,
-      $.hairpin,
       $.tremolo,
-      ...directedPostEvents($, 'figure'),
+      ...directedPostEvents($, 'figure', FIGURE_SPANNERS),
     ),
 
-    ...directedPostEventRules('figure', '^'),
+    ...directedPostEventRules('figure', '^', FIGURE_SPANNERS),
 
     figure_group: $ => prec.right(seq(
       '<',
@@ -901,6 +914,14 @@ export default grammar({
     escape_sequence: _ => token.immediate(/\\[nt\\'"]/),
 
     number: _ => /\d+(\.\d+)?/,
+
+    // A minus sign touching a number. It stands only in a value, since in
+    // music `-2` is a fingering.
+    _negative_number: _ => token(/-\d+(\.\d+)?/),
+
+    // Numbers joined by commas, as in `\time 2,2,3 7/8`. Each comma touches
+    // the number before it.
+    number_list: $ => seq($.number, repeat1(seq(token.immediate(','), $.number))),
 
     // LilyPond's `#` or `$`, then one Scheme datum. Scheme reads `{` and `}`
     // as symbols here, but no file binds them, so LilyPond always rejects

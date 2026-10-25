@@ -496,3 +496,30 @@ Chord mode without braces
 \chordmode c
 
 --------------------------------------------------------------------------------
+
+================================================================================
+A direction before a slur or tie in chord mode
+================================================================================
+
+\chordmode { c^( d_) c^~ c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (chord_mode
+    (sequential_music
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (slur_start)
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (slur_end)
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (tie)
+      (chord_symbol
+        root: (pitch
+          (note_name))))))

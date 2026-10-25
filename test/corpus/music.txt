@@ -287,3 +287,71 @@ A no-break space is not whitespace
 { c }  
 
 --------------------------------------------------------------------------------
+
+================================================================================
+Commands, Scheme and grob paths inside a chord
+================================================================================
+
+{ <d' \parenthesize fis' a'>4 <a\harmonic e'\harmonic>4 <c' \tweak Stem.color #red e'>4 <d,\fermata a'>1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (chord
+      (note
+        pitch: (pitch
+          (note_name)
+          (octave)))
+      (command)
+      (note
+        pitch: (pitch
+          (note_name)
+          (octave)))
+      (note
+        pitch: (pitch
+          (note_name)
+          (octave)))
+      duration: (duration
+        (number)))
+    (chord
+      (note
+        pitch: (pitch
+          (note_name)))
+      (command)
+      (note
+        pitch: (pitch
+          (note_name)
+          (octave)))
+      (command)
+      duration: (duration
+        (number)))
+    (chord
+      (note
+        pitch: (pitch
+          (note_name)
+          (octave)))
+      (command)
+      (dotted_name
+        (identifier)
+        (identifier))
+      (scheme
+        (scheme_symbol))
+      (note
+        pitch: (pitch
+          (note_name)
+          (octave)))
+      duration: (duration
+        (number)))
+    (chord
+      (note
+        pitch: (pitch
+          (note_name)
+          (octave)))
+      (command)
+      (note
+        pitch: (pitch
+          (note_name)
+          (octave)))
+      duration: (duration
+        (number)))))

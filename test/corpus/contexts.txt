@@ -115,3 +115,59 @@ Once is a command
     (note
       pitch: (pitch
         (note_name)))))
+
+================================================================================
+Grob names in a context definition, a with block and a layout block
+================================================================================
+
+\layout { \accidentalStyle Score.modern \context { \Staff \omit TimeSignature \hide Staff.Clef } }
+\new Staff \with { \omit TimeSignature } { c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (layout_block
+    (command)
+    (dotted_name
+      (identifier)
+      (identifier))
+    (context_definition
+      (command)
+      (command)
+      (identifier)
+      (command)
+      (dotted_name
+        (identifier)
+        (identifier))))
+  (new_context
+    type: (identifier)
+    with: (with_block
+      (command)
+      (identifier)))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))))
+
+================================================================================
+Negative property values
+================================================================================
+
+{ \override Fingering.Y-offset = -2 \set fontSize = -1.5 c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (override
+      path: (property_path
+        (identifier)
+        (identifier))
+      value: (number))
+    (set
+      path: (property_path
+        (identifier))
+      value: (number))
+    (note
+      pitch: (pitch
+        (note_name)))))

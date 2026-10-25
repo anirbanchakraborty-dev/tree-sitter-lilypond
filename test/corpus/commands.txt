@@ -233,3 +233,74 @@ fn = #(define-void-function (m s) (ly:music? string?) #f)
       pitch: (pitch
         (note_name))))
   (string))
+
+================================================================================
+A dotted grob path after a command
+================================================================================
+
+{ \omit Staff.TimeSignature \once \hide Score.MetronomeMark \accidentalStyle Score.modern-cautionary \tweak Stem.color #red c'4 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (command)
+    (dotted_name
+      (identifier)
+      (identifier))
+    (command)
+    (command)
+    (dotted_name
+      (identifier)
+      (identifier))
+    (command)
+    (dotted_name
+      (identifier)
+      (identifier))
+    (command)
+    (dotted_name
+      (identifier)
+      (identifier))
+    (scheme
+      (scheme_symbol))
+    (note
+      pitch: (pitch
+        (note_name)
+        (octave))
+      duration: (duration
+        (number)))))
+
+================================================================================
+Comma-separated number lists
+================================================================================
+
+{ \set Timing.beatStructure = 1,1,1 \time 2,2,3 7/8 \volta 1,2 { c } }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (set
+      path: (property_path
+        (identifier)
+        (identifier))
+      value: (number_list
+        (number)
+        (number)
+        (number)))
+    (command)
+    (number_list
+      (number)
+      (number)
+      (number))
+    (fraction
+      numerator: (number)
+      denominator: (number))
+    (command)
+    (number_list
+      (number)
+      (number))
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name))))))

@@ -224,3 +224,23 @@ twice = 2
     (note
       pitch: (pitch
         (note_name)))))
+
+================================================================================
+A number list and a negative number as values
+================================================================================
+
+x = 1,2,3
+y = -2
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (number_list
+      (number)
+      (number)
+      (number)))
+  (assignment
+    name: (identifier)
+    value: (number)))

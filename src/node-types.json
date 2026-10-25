@@ -163,6 +163,10 @@
           "named": true
         },
         {
+          "type": "number_list",
+          "named": true
+        },
+        {
           "type": "override",
           "named": true
         },
@@ -431,6 +435,10 @@
             "named": true
           },
           {
+            "type": "number_list",
+            "named": true
+          },
+          {
             "type": "override",
             "named": true
           },
@@ -673,6 +681,10 @@
           "named": true
         },
         {
+          "type": "number_list",
+          "named": true
+        },
+        {
           "type": "override",
           "named": true
         },
@@ -896,6 +908,10 @@
           "named": true
         },
         {
+          "type": "number_list",
+          "named": true
+        },
+        {
           "type": "override",
           "named": true
         },
@@ -1052,6 +1068,14 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "dotted_name",
+          "named": true
+        },
+        {
           "type": "fingering",
           "named": true
         },
@@ -1081,6 +1105,10 @@
         },
         {
           "type": "phrasing_slur_start",
+          "named": true
+        },
+        {
+          "type": "scheme",
           "named": true
         },
         {
@@ -1223,6 +1251,14 @@
         },
         {
           "type": "context_modification",
+          "named": true
+        },
+        {
+          "type": "dotted_name",
+          "named": true
+        },
+        {
+          "type": "identifier",
           "named": true
         },
         {
@@ -1454,6 +1490,10 @@
         },
         {
           "type": "note_mode",
+          "named": true
+        },
+        {
+          "type": "number_list",
           "named": true
         },
         {
@@ -1738,6 +1778,14 @@
           "named": true
         },
         {
+          "type": "dotted_name",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
           "type": "override",
           "named": true
         },
@@ -1763,6 +1811,16 @@
         }
       ]
     }
+  },
+  {
+    "type": "ligature_end",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "ligature_start",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "lyric_mode",
@@ -1953,6 +2011,14 @@
           "named": true
         },
         {
+          "type": "dotted_name",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
           "type": "override",
           "named": true
         },
@@ -2095,6 +2161,21 @@
     }
   },
   {
+    "type": "number_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "number",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "octave_check",
     "named": true,
     "fields": {},
@@ -2144,6 +2225,10 @@
             "named": true
           },
           {
+            "type": "number_list",
+            "named": true
+          },
+          {
             "type": "scheme",
             "named": true
           },
@@ -2176,6 +2261,14 @@
           "named": true
         },
         {
+          "type": "dotted_name",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
           "type": "override",
           "named": true
         },
@@ -2201,6 +2294,16 @@
         }
       ]
     }
+  },
+  {
+    "type": "phrasing_slur_end",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "phrasing_slur_start",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "pitch",
@@ -2260,6 +2363,10 @@
         "types": [
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "string",
             "named": true
           }
         ]
@@ -2974,6 +3081,10 @@
           "named": true
         },
         {
+          "type": "number_list",
+          "named": true
+        },
+        {
           "type": "override",
           "named": true
         },
@@ -3201,6 +3312,10 @@
           "named": true
         },
         {
+          "type": "number_list",
+          "named": true
+        },
+        {
           "type": "override",
           "named": true
         },
@@ -3319,6 +3434,10 @@
           },
           {
             "type": "number",
+            "named": true
+          },
+          {
+            "type": "number_list",
             "named": true
           },
           {
@@ -3471,6 +3590,10 @@
         },
         {
           "type": "note_mode",
+          "named": true
+        },
+        {
+          "type": "number_list",
           "named": true
         },
         {
@@ -3744,6 +3867,10 @@
           "named": true
         },
         {
+          "type": "number_list",
+          "named": true
+        },
+        {
           "type": "override",
           "named": true
         },
@@ -3917,6 +4044,11 @@
     }
   },
   {
+    "type": "tie",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "unset",
     "named": true,
     "fields": {
@@ -3971,6 +4103,14 @@
         },
         {
           "type": "context_modification",
+          "named": true
+        },
+        {
+          "type": "dotted_name",
+          "named": true
+        },
+        {
+          "type": "identifier",
           "named": true
         },
         {
@@ -4113,6 +4253,14 @@
     "named": false
   },
   {
+    "type": "\\(",
+    "named": false
+  },
+  {
+    "type": "\\)",
+    "named": false
+  },
+  {
     "type": "\\+",
     "named": false
   },
@@ -4125,7 +4273,15 @@
     "named": false
   },
   {
+    "type": "\\[",
+    "named": false
+  },
+  {
     "type": "\\\\",
+    "named": false
+  },
+  {
+    "type": "\\]",
     "named": false
   },
   {
@@ -4366,14 +4522,6 @@
     "named": true
   },
   {
-    "type": "ligature_end",
-    "named": true
-  },
-  {
-    "type": "ligature_start",
-    "named": true
-  },
-  {
     "type": "line_comment",
     "named": true,
     "extra": true
@@ -4404,14 +4552,6 @@
   },
   {
     "type": "octave",
-    "named": true
-  },
-  {
-    "type": "phrasing_slur_end",
-    "named": true
-  },
-  {
-    "type": "phrasing_slur_start",
     "named": true
   },
   {
@@ -4459,10 +4599,6 @@
     "named": true
   },
   {
-    "type": "tie",
-    "named": true
-  },
-  {
     "type": "tremolo",
     "named": true
   },
@@ -4472,6 +4608,10 @@
   },
   {
     "type": "}",
+    "named": false
+  },
+  {
+    "type": "~",
     "named": false
   }
 ]
