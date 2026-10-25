@@ -355,3 +355,47 @@ Commands, Scheme and grob paths inside a chord
           (octave)))
       duration: (duration
         (number)))))
+
+================================================================================
+Strings and markups inside a chord
+================================================================================
+
+{ <c-\balloonText #'(1 . 2) "hoi" e>8 <f \footnote #'(1 . 1) \markup { n } a> }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (chord
+      (note
+        pitch: (pitch
+          (note_name)))
+      (articulation
+        (command))
+      (scheme
+        (scheme_quote
+          (scheme_list
+            (scheme_number)
+            (scheme_number))))
+      (string)
+      (note
+        pitch: (pitch
+          (note_name)))
+      duration: (duration
+        (number)))
+    (chord
+      (note
+        pitch: (pitch
+          (note_name)))
+      (command)
+      (scheme
+        (scheme_quote
+          (scheme_list
+            (scheme_number)
+            (scheme_number))))
+      (markup
+        (markup_block
+          (markup_word)))
+      (note
+        pitch: (pitch
+          (note_name))))))

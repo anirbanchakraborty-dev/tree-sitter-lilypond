@@ -252,6 +252,11 @@ export default grammar({
       $._identifier,
       alias($._dotted_identifier, $.dotted_name),
       $.scheme,
+      // A command's other arguments: `\clef "bass"`, `\magnifyStaff 2`,
+      // `\time 5/4`.
+      $.string,
+      $.number,
+      $.fraction,
     ),
 
     context_modification: $ => seq(
@@ -524,13 +529,15 @@ export default grammar({
     chord: $ => prec.right(seq(
       '<',
       // A command and its arguments may stand before a note, as in
-      // `<c \tweak Stem.color #red e>`.
+      // `<c \tweak Stem.color #red e>`, or `<c \footnote \markup { n } e>`.
       repeat(choice(
         $.note,
         $._post_event,
         $.command,
         $.scheme,
         alias($._dotted_identifier, $.dotted_name),
+        $.string,
+        $.markup,
       )),
       '>',
       optional(field('duration', $.duration)),

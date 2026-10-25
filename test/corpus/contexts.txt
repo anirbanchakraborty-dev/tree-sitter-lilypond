@@ -171,3 +171,28 @@ Negative property values
     (note
       pitch: (pitch
         (note_name)))))
+
+================================================================================
+Commands with a string, number or fraction in a with block
+================================================================================
+
+\new Staff \with { \clef "bass" \magnifyStaff 2 \time 5/4 } { c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (new_context
+    type: (identifier)
+    with: (with_block
+      (command)
+      (string)
+      (command)
+      (number)
+      (command)
+      (fraction
+        numerator: (number)
+        denominator: (number))))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))))

@@ -368,6 +368,18 @@
         {
           "type": "SYMBOL",
           "name": "scheme"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "number"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "fraction"
         }
       ]
     },
@@ -1603,6 +1615,14 @@
                   },
                   "named": true,
                   "value": "dotted_name"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "string"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "markup"
                 }
               ]
             }
