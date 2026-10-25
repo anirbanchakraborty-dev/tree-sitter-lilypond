@@ -347,6 +347,10 @@
             "named": true
           },
           {
+            "type": "context_definition",
+            "named": true
+          },
+          {
             "type": "dotted_name",
             "named": true
           },
@@ -1104,6 +1108,10 @@
           "named": true
         },
         {
+          "type": "number",
+          "named": true
+        },
+        {
           "type": "phrasing_slur_end",
           "named": true
         },
@@ -1278,6 +1286,10 @@
           "named": true
         },
         {
+          "type": "number_list",
+          "named": true
+        },
+        {
           "type": "override",
           "named": true
         },
@@ -1312,6 +1324,10 @@
       "multiple": false,
       "required": true,
       "types": [
+        {
+          "type": "command",
+          "named": true
+        },
         {
           "type": "identifier",
           "named": true
@@ -1382,11 +1398,19 @@
       "required": false,
       "types": [
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "fraction",
           "named": true
         },
         {
           "type": "number",
+          "named": true
+        },
+        {
+          "type": "scheme",
           "named": true
         }
       ]
@@ -1739,6 +1763,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "scheme",
           "named": true
         }
@@ -1806,6 +1834,10 @@
           "named": true
         },
         {
+          "type": "include",
+          "named": true
+        },
+        {
           "type": "override",
           "named": true
         },
@@ -1819,6 +1851,10 @@
         },
         {
           "type": "set",
+          "named": true
+        },
+        {
+          "type": "string",
           "named": true
         },
         {
@@ -2039,6 +2075,10 @@
           "named": true
         },
         {
+          "type": "include",
+          "named": true
+        },
+        {
           "type": "override",
           "named": true
         },
@@ -2052,6 +2092,10 @@
         },
         {
           "type": "set",
+          "named": true
+        },
+        {
+          "type": "string",
           "named": true
         },
         {
@@ -2094,6 +2138,10 @@
             "named": true
           },
           {
+            "type": "scheme",
+            "named": true
+          },
+          {
             "type": "string",
             "named": true
           }
@@ -2105,6 +2153,10 @@
         "types": [
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "scheme",
             "named": true
           }
         ]
@@ -2191,6 +2243,10 @@
         {
           "type": "number",
           "named": true
+        },
+        {
+          "type": "string",
+          "named": true
         }
       ]
     }
@@ -2230,6 +2286,14 @@
         "types": [
           {
             "type": "command",
+            "named": true
+          },
+          {
+            "type": "fraction",
+            "named": true
+          },
+          {
+            "type": "identifier",
             "named": true
           },
           {
@@ -2289,6 +2353,10 @@
           "named": true
         },
         {
+          "type": "include",
+          "named": true
+        },
+        {
           "type": "override",
           "named": true
         },
@@ -2302,6 +2370,10 @@
         },
         {
           "type": "set",
+          "named": true
+        },
+        {
+          "type": "string",
           "named": true
         },
         {
@@ -2372,7 +2444,15 @@
         "required": true,
         "types": [
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "number",
+            "named": true
+          },
+          {
+            "type": "scheme",
             "named": true
           }
         ]
@@ -3445,6 +3525,14 @@
             "named": true
           },
           {
+            "type": "fraction",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
             "type": "markup",
             "named": true
           },
@@ -4005,6 +4093,11 @@
     }
   },
   {
+    "type": "string_number",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "tempo",
     "named": true,
     "fields": {
@@ -4013,7 +4106,15 @@
         "required": false,
         "types": [
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "number",
+            "named": true
+          },
+          {
+            "type": "scheme",
             "named": true
           }
         ]
@@ -4022,6 +4123,10 @@
         "multiple": false,
         "required": false,
         "types": [
+          {
+            "type": "identifier",
+            "named": true
+          },
           {
             "type": "markup",
             "named": true
@@ -4054,6 +4159,14 @@
       "types": [
         {
           "type": "markup",
+          "named": true
+        },
+        {
+          "type": "markup_word",
+          "named": true
+        },
+        {
+          "type": "scheme",
           "named": true
         },
         {
@@ -4142,6 +4255,10 @@
           "named": true
         },
         {
+          "type": "number_list",
+          "named": true
+        },
+        {
           "type": "override",
           "named": true
         },
@@ -4189,6 +4306,10 @@
     "named": false
   },
   {
+    "type": "#@",
+    "named": false
+  },
+  {
     "type": "#{",
     "named": false
   },
@@ -4198,6 +4319,10 @@
   },
   {
     "type": "$",
+    "named": false
+  },
+  {
+    "type": "$@",
     "named": false
   },
   {
@@ -4624,10 +4749,6 @@
   },
   {
     "type": "scheme_symbol",
-    "named": true
-  },
-  {
-    "type": "string_number",
     "named": true
   },
   {

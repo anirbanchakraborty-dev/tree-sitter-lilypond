@@ -279,6 +279,8 @@ A vertical tab is not whitespace
 
 --------------------------------------------------------------------------------
 
+
+
 ================================================================================
 A no-break space is not whitespace
 :error
@@ -287,6 +289,8 @@ A no-break space is not whitespace
 { c }  
 
 --------------------------------------------------------------------------------
+
+
 
 ================================================================================
 Commands, Scheme and grob paths inside a chord
@@ -399,3 +403,111 @@ Strings and markups inside a chord
       (note
         pitch: (pitch
           (note_name))))))
+
+================================================================================
+A duration multiplied by Scheme
+================================================================================
+
+n = 2
+{ c1*$n d2 * #(/ 1 2) }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (number))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)
+        (scheme
+          (scheme_symbol))))
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)
+        (scheme
+          (scheme_list
+            (scheme_symbol)
+            (scheme_number)
+            (scheme_number)))))))
+
+================================================================================
+A duration multiplied by a variable
+================================================================================
+
+len = 3/4
+{ c1 * \len ~ c1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (fraction
+      numerator: (number)
+      denominator: (number))
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name))
+        duration: (duration
+          (number)
+          (command)))
+      (tie)
+      (note
+        pitch: (pitch
+          (note_name))
+        duration: (duration
+          (number))))))
+
+================================================================================
+A number after a command inside a chord
+================================================================================
+
+{ <c\finger 1 e\finger 2>4 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (chord
+      (note
+        pitch: (pitch
+          (note_name)))
+      (command)
+      (number)
+      (note
+        pitch: (pitch
+          (note_name)))
+      (command)
+      (number)
+      duration: (duration
+        (number)))))
+
+================================================================================
+Voices named in a list of numbers and strings
+================================================================================
+
+\voices 1,"alto",3 << c \\ e >>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (command)
+  (number_list
+    (number)
+    (string)
+    (number))
+  (simultaneous_music
+    (note
+      pitch: (pitch
+        (note_name)))
+    (voice_separator)
+    (note
+      pitch: (pitch
+        (note_name)))))

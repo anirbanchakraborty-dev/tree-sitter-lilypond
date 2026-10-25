@@ -244,3 +244,58 @@ y = -2
   (assignment
     name: (identifier)
     value: (number)))
+
+================================================================================
+A number with a trailing dot
+================================================================================
+
+\paper { indent = 7. width = 4.\cm gap = 2. \mm }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (paper_block
+    (assignment
+      name: (identifier)
+      value: (number))
+    (assignment
+      name: (identifier)
+      value: (number)
+      value: (command))
+    (assignment
+      name: (identifier)
+      value: (number)
+      value: (command))))
+
+================================================================================
+A markup command defined by assignment
+================================================================================
+
+\markup loud = \markup \bold \huge \etc
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (markup
+      (command)
+      (command)
+      (command))))
+
+================================================================================
+A context definition as a value
+================================================================================
+
+Solo = \context { \type Engraver_group \name "Solo" }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (context_definition
+      (context_modification
+        (identifier))
+      (context_modification
+        (string)))))

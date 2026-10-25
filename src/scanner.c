@@ -11,7 +11,8 @@
 // `=` lie ahead. The parser has one token of lookahead, which cannot see past
 // the name to the `=`, and `_markup_word_ahead`, also zero-width, where that
 // look found a markup word instead. And it reads lyric and markup words, whose
-// end depends on whether the word sits inside `#{ #}`.
+// end depends on whether the word sits inside `#{ #}`, and markup words inside
+// braces apart from the rest, since only there can a word be `<<` or `>>`.
 
 #include "tree_sitter/parser.h"
 
@@ -28,6 +29,7 @@ enum TokenType {
     MARKUP_WORD,
     ASSIGNMENT_START,
     MARKUP_WORD_AHEAD,
+    MARKUP_BLOCK_WORD,
     ERROR_SENTINEL,
 };
 
@@ -196,13 +198,28 @@ static bool ends_lyric_word(TSLexer *lexer, bool embedded) {
 }
 
 // A markup word: anything up to an ending character. A `%` cannot come first,
-// since there it starts a comment.
-static bool scan_markup_word(TSLexer *lexer, bool embedded) {
-    if (ends_markup_word(lexer, embedded) || lexer->lookahead == '%') {
+// since there it starts a comment. Outside braces a word that is exactly `<<`
+// or `>>` is left to the music, because markup whose last command takes no
+// word, such as `\markup \vspace #2`, is far more often followed by `<<` than
+// given one.
+static bool scan_markup_word(TSLexer *lexer, bool embedded, bool braced) {
+    int32_t first = lexer->lookahead;
+    if (ends_markup_word(lexer, embedded) || first == '%') {
         return false;
     }
+    lexer->advance(lexer, false);
+    int32_t second = lexer->lookahead;
+    unsigned length = 1;
     while (!ends_markup_word(lexer, embedded)) {
         lexer->advance(lexer, false);
+        length++;
+    }
+    if (braced) {
+        lexer->result_symbol = MARKUP_BLOCK_WORD;
+        return true;
+    }
+    if (length == 2 && first == second && (first == '<' || first == '>')) {
+        return false;
     }
     lexer->result_symbol = MARKUP_WORD;
     return true;
@@ -251,7 +268,8 @@ bool tree_sitter_lilypond_external_scanner_scan(void *payload, TSLexer *lexer,
     bool want_comment = valid_symbols[SCHEME_BLOCK_COMMENT];
     bool want_assignment = valid_symbols[ASSIGNMENT_START];
     bool want_lyric = valid_symbols[LYRIC_WORD];
-    bool want_markup = valid_symbols[MARKUP_WORD];
+    bool want_braced = valid_symbols[MARKUP_BLOCK_WORD];
+    bool want_markup = valid_symbols[MARKUP_WORD] || want_braced;
     if (!want_start && !want_end && !want_comment && !want_assignment && !want_lyric &&
         !want_markup) {
         return false;
@@ -284,7 +302,7 @@ bool tree_sitter_lilypond_external_scanner_scan(void *payload, TSLexer *lexer,
     if (lexer->lookahead != '#') {
         bool embedded = scanner->depth > 0;
         if (want_markup) {
-            return scan_markup_word(lexer, embedded);
+            return scan_markup_word(lexer, embedded, want_braced);
         }
         return want_lyric && scan_lyric_word(lexer, embedded, spaced);
     }

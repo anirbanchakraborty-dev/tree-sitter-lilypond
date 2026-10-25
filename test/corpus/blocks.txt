@@ -251,3 +251,124 @@ A quoted repeat type
       (note
         pitch: (pitch
           (note_name))))))
+
+================================================================================
+A variable as a repeat count or as the alternatives
+================================================================================
+
+count = 2
+endings = { d e }
+{ \repeat unfold \count c \repeat volta 2 c \alternative \endings }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (number))
+  (assignment
+    name: (identifier)
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))
+      (note
+        pitch: (pitch
+          (note_name)))))
+  (sequential_music
+    (repeat
+      type: (identifier)
+      count: (command))
+    (note
+      pitch: (pitch
+        (note_name)))
+    (repeat
+      type: (identifier)
+      count: (number))
+    (note
+      pitch: (pitch
+        (note_name)))
+    (alternative
+      (command))))
+
+================================================================================
+Tempo marks with a bare word, a variable or Scheme
+================================================================================
+
+fast = 120
+{ \tempo Adagio c \tempo 4 = \fast c \tempo 8 = #(* 2 60) c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (number))
+  (sequential_music
+    (tempo
+      text: (identifier))
+    (note
+      pitch: (pitch
+        (note_name)))
+    (tempo
+      unit: (duration
+        (number))
+      bpm: (command))
+    (note
+      pitch: (pitch
+        (note_name)))
+    (tempo
+      unit: (duration
+        (number))
+      bpm: (scheme
+        (scheme_list
+          (scheme_symbol)
+          (scheme_number)
+          (scheme_number))))
+    (note
+      pitch: (pitch
+        (note_name)))))
+
+================================================================================
+Commands, includes and strings inside header and output blocks
+================================================================================
+
+extraFields = \header { composer = "C" }
+inheritFrom = #(define-void-function (a b) (string? string?) #f)
+\header { \extraFields title = "T" }
+\midi { \include "performer-init.ly" }
+\layout { \inheritFrom "Lead" "Staff" }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (header_block
+      (assignment
+        name: (identifier)
+        value: (string))))
+  (assignment
+    name: (identifier)
+    value: (scheme
+      (scheme_list
+        (scheme_symbol)
+        (scheme_list
+          (scheme_symbol)
+          (scheme_symbol))
+        (scheme_list
+          (scheme_symbol)
+          (scheme_symbol))
+        (scheme_boolean))))
+  (header_block
+    (command)
+    (assignment
+      name: (identifier)
+      value: (string)))
+  (midi_block
+    (include
+      path: (string)))
+  (layout_block
+    (command)
+    (string)
+    (string)))

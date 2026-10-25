@@ -196,3 +196,123 @@ Commands with a string, number or fraction in a with block
     (note
       pitch: (pitch
         (note_name)))))
+
+================================================================================
+A variable or Scheme as a with block
+================================================================================
+
+mods = \with { \consists "Ambitus_engraver" }
+\new Staff \with \mods { c }
+\new Staff \with #mods { c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (with_block
+      (context_modification
+        (string))))
+  (new_context
+    type: (identifier)
+    with: (with_block
+      (command)))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name))))
+  (new_context
+    type: (identifier)
+    with: (with_block
+      (scheme
+        (scheme_symbol))))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))))
+
+================================================================================
+Scheme as a context type and a context name
+================================================================================
+
+type = "Staff"
+\new #type { c }
+\new Staff = #(string-append "a" "b") { c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (string))
+  (new_context
+    type: (scheme
+      (scheme_symbol)))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name))))
+  (new_context
+    type: (identifier)
+    name: (scheme
+      (scheme_list
+        (scheme_symbol)
+        (scheme_string)
+        (scheme_string))))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))))
+
+================================================================================
+A variable and a number list in a context definition
+================================================================================
+
+myEngraver = #(make-engraver)
+settings = #(define-scheme-function (a b c) (fraction? number-list? boolean?) #{ \with { } #})
+\layout {
+  \context {
+    \Voice
+    \consists \myEngraver
+    \settings 3/8 1,2 ##f
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (scheme
+      (scheme_list
+        (scheme_symbol))))
+  (assignment
+    name: (identifier)
+    value: (scheme
+      (scheme_list
+        (scheme_symbol)
+        (scheme_list
+          (scheme_symbol)
+          (scheme_symbol)
+          (scheme_symbol))
+        (scheme_list
+          (scheme_symbol)
+          (scheme_symbol)
+          (scheme_symbol))
+        (embedded_lilypond
+          (command)
+          (sequential_music)))))
+  (layout_block
+    (context_definition
+      (command)
+      (context_modification
+        (command))
+      (command)
+      (fraction
+        numerator: (number)
+        denominator: (number))
+      (number_list
+        (number)
+        (number))
+      (scheme
+        (scheme_boolean)))))

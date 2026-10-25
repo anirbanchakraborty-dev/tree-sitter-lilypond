@@ -425,6 +425,8 @@ A dash articulation in chord mode
 
 --------------------------------------------------------------------------------
 
+
+
 ================================================================================
 A step separator at the end of the modifiers
 :error
@@ -433,6 +435,8 @@ A step separator at the end of the modifiers
 \chordmode { c:7. }
 
 --------------------------------------------------------------------------------
+
+
 
 ================================================================================
 A minus after a modifier word
@@ -443,6 +447,8 @@ A minus after a modifier word
 
 --------------------------------------------------------------------------------
 
+
+
 ================================================================================
 A plus before a step
 :error
@@ -451,6 +457,8 @@ A plus before a step
 \chordmode { c:+7 }
 
 --------------------------------------------------------------------------------
+
+
 
 ================================================================================
 Modifiers after an inversion
@@ -461,6 +469,8 @@ Modifiers after an inversion
 
 --------------------------------------------------------------------------------
 
+
+
 ================================================================================
 An inversion after a bass note
 :error
@@ -469,6 +479,8 @@ An inversion after a bass note
 \chordmode { c:m7/+e/f }
 
 --------------------------------------------------------------------------------
+
+
 
 ================================================================================
 Modifiers on a chord repeat
@@ -479,6 +491,8 @@ Modifiers on a chord repeat
 
 --------------------------------------------------------------------------------
 
+
+
 ================================================================================
 A forced accidental on a chord root
 :error
@@ -488,6 +502,8 @@ A forced accidental on a chord root
 
 --------------------------------------------------------------------------------
 
+
+
 ================================================================================
 Chord mode without braces
 :error
@@ -496,6 +512,8 @@ Chord mode without braces
 \chordmode c
 
 --------------------------------------------------------------------------------
+
+
 
 ================================================================================
 A direction before a slur or tie in chord mode
@@ -520,6 +538,43 @@ A direction before a slur or tie in chord mode
         root: (pitch
           (note_name)))
       (tie)
+      (chord_symbol
+        root: (pitch
+          (note_name))))))
+
+================================================================================
+A grob path after a command in chord mode
+================================================================================
+
+oo = #(define-music-function (path value) (symbol-list? number?) #{ #})
+\chordmode { c \oo FretBoard.size #1.0 d }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (scheme
+      (scheme_list
+        (scheme_symbol)
+        (scheme_list
+          (scheme_symbol)
+          (scheme_symbol))
+        (scheme_list
+          (scheme_symbol)
+          (scheme_symbol))
+        (embedded_lilypond))))
+  (chord_mode
+    (sequential_music
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (command)
+      (dotted_name
+        (identifier)
+        (identifier))
+      (scheme
+        (scheme_number))
       (chord_symbol
         root: (pitch
           (note_name))))))

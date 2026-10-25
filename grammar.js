@@ -35,8 +35,13 @@ const markupCommand = ($) => choice($.command, alias('\\override', $.command));
 
 // Markup commands and their Scheme arguments, then an argument, which may be
 // left out after a command.
+// `\etc` in place of the argument leaves it to the caller, as in
+// `\markup loud = \markup \bold \etc`.
 const markupContent = ($, argument) => choice(
-  seq(repeat1(choice(markupCommand($), $.scheme)), optional(argument)),
+  seq(
+    repeat1(choice(markupCommand($), $.scheme)),
+    optional(prec.dynamic(1, choice(argument, alias('\\etc', $.command)))),
+  ),
   argument,
 );
 
@@ -44,8 +49,8 @@ const markupContent = ($, argument) => choice(
 const metronomeMark = ($) => seq(
   field('unit', $.duration),
   '=',
-  field('bpm', $.number),
-  optional(seq('-', field('bpm', $.number))),
+  field('bpm', $._bpm),
+  optional(seq('-', field('bpm', $._bpm))),
 );
 
 // What follows the direction of an articulation: a shorthand or a command.
@@ -96,7 +101,7 @@ const directedPostEventRules = (mode, direction, spanners = Object.keys(SPANNERS
   ...spannerRules(`_${mode}_`, () => direction, spanners),
   [`_${mode}_articulation`]: $ => seq(direction, articulationMark($)),
   [`_${mode}_fingering`]: $ => seq(direction, $.number),
-  [`_${mode}_text_script`]: $ => seq(direction, choice($.string, $.markup)),
+  [`_${mode}_text_script`]: $ => seq(direction, choice($.string, $.markup, $.scheme)),
 });
 
 // Braces holding one mode's items, with `\sequential` before them if wanted.
@@ -147,6 +152,7 @@ export default grammar({
     $._markup_word,
     $._assignment_start,
     $._markup_word_ahead,
+    $._markup_block_word,
     $._error_sentinel,
   ],
 
@@ -161,11 +167,11 @@ export default grammar({
   // as `\overrideProperty` still wins by length.
   word: $ => $.command,
 
-  // Where a markup list ends is decided by which reading parses. See
-  // `markup_list`. In chord mode a number before `/` may end a duration, with
+  // Where a markup or a markup list ends is decided by which reading parses.
+  // See `markup` and `markup_list`. In chord mode a number before `/` may end a duration, with
   // an inversion after it as in `c4/e`, or start a fraction, as in `c1*3/4`,
   // and again the reading that parses wins.
-  conflicts: $ => [[$.markup_list], [$.duration, $.fraction]],
+  conflicts: $ => [[$.markup], [$.markup_list], [$.duration, $.fraction]],
 
   reserved: {
     global: _ => [
@@ -204,7 +210,8 @@ export default grammar({
     header_block: $ => seq(
       '\\header',
       '{',
-      repeat(choice($.assignment, $.scheme)),
+      // A command may stand here too, such as a variable holding fields.
+      repeat(choice($.assignment, $.scheme, $.command)),
       '}',
     ),
 
@@ -227,6 +234,9 @@ export default grammar({
       $.revert,
       $.unset,
       $.tempo,
+      $.include,
+      // A command's string arguments: `\inheritFrom "Lead" "Staff"`.
+      $.string,
     ),
 
     // `\context { }` inside an output definition. In music `\context` names a
@@ -238,7 +248,11 @@ export default grammar({
       '}',
     ),
 
-    with_block: $ => seq('\\with', '{', repeat($._context_item), '}'),
+    // `\with { }`, or a variable or Scheme that holds one.
+    with_block: $ => seq(
+      '\\with',
+      choice(seq('{', repeat($._context_item), '}'), $.command, $.scheme),
+    ),
 
     _context_item: $ => choice(
       $.context_modification,
@@ -257,6 +271,7 @@ export default grammar({
       $.string,
       $.number,
       $.fraction,
+      $.number_list,
     ),
 
     context_modification: $ => seq(
@@ -271,7 +286,7 @@ export default grammar({
         '\\defaultchild',
         '\\description',
       ),
-      choice($.string, $._identifier, $.scheme),
+      choice($.string, $._identifier, $.scheme, $.command),
     ),
 
     score_block: $ => seq(
@@ -301,7 +316,9 @@ export default grammar({
     // name and then `=` lie ahead. One token of lookahead cannot see past the
     // `y` in `x = 1 y = 2` to its `=`, so without the scanner `y` would read as
     // a note with an octave check that continues the first value.
+    // `\markup` before the name defines a markup command.
     assignment: $ => seq(
+      optional('\\markup'),
       $._assignment_start,
       field('name', choice(
         $._identifier,
@@ -322,7 +339,11 @@ export default grammar({
       $.string,
       $.scheme,
       seq(
-        choice($.number, alias($._negative_number, $.number)),
+        choice(
+          $.number,
+          alias($._negative_number, $.number),
+          alias($._number_with_dot, $.number),
+        ),
         optional(alias($._unit, $.command)),
       ),
       seq(
@@ -348,6 +369,7 @@ export default grammar({
       $.layout_block,
       $.midi_block,
       $.with_block,
+      $.context_definition,
       $.score_block,
       $.book_block,
       $.bookpart_block,
@@ -357,6 +379,10 @@ export default grammar({
     // only LilyPond's own units are taken here, because a command on the line
     // after `x = 2` usually starts the next expression instead.
     _unit: _ => token(prec(1, choice('\\mm', '\\cm', '\\in', '\\pt', '\\bp'))),
+
+    // `7.`, a number with a trailing dot. It stands only in a value, since in
+    // music `4.` is a dotted duration.
+    _number_with_dot: _ => token(/\d+\./),
 
     // Music at the top level of a file or a book is either complete in itself
     // or a command, context, repeat or alternative followed by its arguments.
@@ -538,6 +564,8 @@ export default grammar({
         alias($._dotted_identifier, $.dotted_name),
         $.string,
         $.markup,
+        // A command's number argument: `<c\finger 1 e>`.
+        $.number,
       )),
       '>',
       optional(field('duration', $.duration)),
@@ -546,7 +574,8 @@ export default grammar({
     duration: $ => prec.right(seq(
       choice($.number, '\\breve', '\\longa', '\\maxima'),
       repeat('.'),
-      repeat(seq('*', choice($.number, $.fraction))),
+      // A multiplier may be a variable that holds one: `c1 * \len`.
+      repeat(seq('*', choice($.number, $.fraction, $.scheme, $.command))),
     )),
 
     fraction: $ => seq(
@@ -584,11 +613,19 @@ export default grammar({
 
     fingering: $ => seq($._direction, $.number),
 
-    string_number: _ => /\\\d+/,
+    // `\3`, or `-\3` with a direction before it.
+    string_number: $ => seq(optional($._direction), token(/\\\d+/)),
 
     tremolo: _ => /:\d*/,
 
-    text_script: $ => seq($._direction, choice($.string, $.markup)),
+    // Text after a direction: a string, markup, or Scheme that makes markup.
+    // A bare word is text too, since no note may follow a direction: `c^foo`.
+    text_script: $ => seq($._direction, choice(
+      $.string,
+      $.markup,
+      $.scheme,
+      alias($._word, $.markup_word),
+    )),
 
     bar_check: _ => '|',
 
@@ -597,8 +634,8 @@ export default grammar({
     // The music a new context holds follows it as the next sibling.
     new_context: $ => prec.right(seq(
       choice('\\new', '\\context'),
-      field('type', $._identifier),
-      optional(seq('=', field('name', choice($.string, $._identifier)))),
+      field('type', choice($._identifier, $.scheme)),
+      optional(seq('=', field('name', choice($.string, $._identifier, $.scheme)))),
       optional(field('with', $.with_block)),
     )),
 
@@ -628,11 +665,14 @@ export default grammar({
     unset: $ => seq('\\unset', field('path', $.property_path)),
 
     // `Staff.TimeSignature.stencil`, or the older form that gives the last
-    // part in Scheme: `Staff.TimeSignature #'stencil`.
-    property_path: $ => prec.right(seq(
-      $._identifier,
-      repeat(seq('.', $._identifier)),
-      repeat($.scheme),
+    // part in Scheme: `Staff.TimeSignature #'stencil`, or Scheme alone.
+    property_path: $ => prec.right(choice(
+      seq(
+        $._identifier,
+        repeat(seq('.', $._identifier)),
+        repeat($.scheme),
+      ),
+      repeat1($.scheme),
     )),
 
     _property_value: $ => choice(
@@ -644,23 +684,34 @@ export default grammar({
       $.markup,
       $.markup_list,
       $.command,
+      // A context's name, as in `\set associatedVoice = melody`.
+      $._identifier,
+      $.fraction,
     ),
 
     // The music a repeat applies to follows it as the next sibling.
     repeat: $ => seq(
       '\\repeat',
       field('type', choice($._identifier, $.string)),
-      field('count', $.number),
+      field('count', choice($.number, $.command, $.scheme)),
     ),
 
-    alternative: $ => seq('\\alternative', '{', repeat($._music), '}'),
+    // The endings in braces, or a variable that holds them.
+    alternative: $ => seq(
+      '\\alternative',
+      choice(seq('{', repeat($._music), '}'), $.command),
+    ),
+
+    // A rate in a metronome mark: a number, or a variable or Scheme that
+    // holds one.
+    _bpm: $ => choice($.number, $.command, $.scheme),
 
     // `\tempo 4 = 120`, `\tempo "Allegro" 4 = 100-120` or `\tempo "Andante"`.
     tempo: $ => prec.right(seq(
       '\\tempo',
       choice(
         seq(
-          field('text', choice($.string, $.markup)),
+          field('text', choice($.string, $.markup, $._identifier)),
           optional(metronomeMark($)),
         ),
         metronomeMark($),
@@ -757,6 +808,8 @@ export default grammar({
       $.string,
       $.scheme,
       $.markup,
+      // A grob path after a command: `\oo FretBoard.size #1.0`.
+      alias($._dotted_identifier, $.dotted_name),
       ...keywordItems($),
       alias($._chord_alternative, $.alternative),
       $._chord_music,
@@ -846,7 +899,11 @@ export default grammar({
     figure: $ => seq(
       optional('['),
       choice($.number, '_', $.string, $.markup),
-      repeat(choice('+', '-', '!', '\\+', '\\!', '/', '\\\\', ']')),
+      // An alteration in brackets, as in `6[+]` or `6[ + ]`, is one token.
+      repeat(choice(
+        '+', '-', '!', '\\+', '\\!', '/', '\\\\', ']',
+        token(/\[\s*[-+!](\s*[-+!])*\s*\]/),
+      )),
     ),
 
     // Drum mode reads drum names where notes stand. Which names exist is known
@@ -864,8 +921,12 @@ export default grammar({
     // runs, so the commands are flat and the markup ends after its first
     // argument. A command with two markup arguments therefore leaves its
     // second outside, unless the markup is braced. The argument may be left
-    // out after a command, which can be a variable holding a whole markup.
-    markup: $ => prec.right(seq('\\markup', markupContent($, $._markup_argument))),
+    // out after a command, which can be a variable holding a whole markup, or
+    // a command such as `\vspace #2` that takes only Scheme. So after a
+    // command both readings run, and one that meets an error is dropped, as
+    // when braces that follow hold music markup cannot. Where both parse, the
+    // argument is the markup's.
+    markup: $ => seq('\\markup', markupContent($, $._markup_argument)),
 
     // Where an assignment may follow the markup, the scanner looks past a word
     // for `=` before it knows the word is the markup's, and by then the word's
@@ -891,9 +952,19 @@ export default grammar({
       $.markup_block,
     )),
 
+    // Inside braces a word may be `<<` or `>>`, which after a markup's last
+    // command starts music instead, so the scanner reads braced words as a
+    // token of their own.
     markup_block: $ => seq(
       '{',
-      repeat(choice(markupCommand($), $.scheme, $._markup_argument)),
+      repeat(choice(
+        markupCommand($),
+        $.scheme,
+        $.markup_block,
+        alias($._markup_block_word, $.markup_word),
+        $.string,
+        $.score_block,
+      )),
       '}',
     ),
 
@@ -928,14 +999,19 @@ export default grammar({
 
     // Numbers joined by commas, as in `\time 2,2,3 7/8`. Each comma touches
     // the number before it.
-    number_list: $ => seq($.number, repeat1(seq(token.immediate(','), $.number))),
+    // `\voices` takes strings among them: `\voices 1,"alto",3`.
+    number_list: $ => seq(
+      $.number,
+      repeat1(seq(token.immediate(','), choice($.number, $.string))),
+    ),
 
-    // LilyPond's `#` or `$`, then one Scheme datum. Scheme reads `{` and `}`
+    // LilyPond's `#` or `$`, then one Scheme datum. `#@` and `$@` splice a
+    // list of music in where the list stands. Scheme reads `{` and `}`
     // as symbols here, but no file binds them, so LilyPond always rejects
     // `#{` and `#}` at this level and the tree marks them as errors too.
     // Embedded LilyPond needs a second `#`: `##{ c #}`.
     scheme: $ => seq(
-      choice('#', '$'),
+      choice('#', '$', '#@', '$@'),
       choice(alias($._scheme_top_symbol, $.scheme_symbol), $._scheme_value),
     ),
 
@@ -999,7 +1075,8 @@ export default grammar({
 
     _scheme_top_symbol: _ => token(prec(1, schemeSymbol('{}'))),
 
-    scheme_boolean: _ => /#(t|f|true|false)/,
+    // Guile reads `#T` and `#F` as `#t` and `#f`.
+    scheme_boolean: _ => /#([tTfF]|true|false)/,
 
     // `#\a`, `#\space` or `#\x41`: one character, then any name it starts.
     scheme_character: _ => /#\\(.|\n)[^\s()";'`,]*/,
@@ -1028,10 +1105,13 @@ export default grammar({
     ),
 
     // `\word`, or `\"any text"`, which names a variable whose name is not a
-    // word.
+    // word, or a backslash and one punctuation character, as in `\^`, `\=`
+    // and `\{`. The punctuation leaves out every character that already
+    // follows a backslash in a token of its own, such as `\(` and `\<`.
     command: _ => token(choice(
       new RegExp(`\\\\${WORD}`),
       /\\"([^"\\]|\\.)*"/,
+      /\\[#$%&'*,\-./:;=?@^_`{|}~]/,
     )),
 
     // One word token serves every position, because Tree-sitter cannot lex two

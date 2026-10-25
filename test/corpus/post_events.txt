@@ -247,3 +247,150 @@ A direction before a tie, slur, beam or hairpin
         (note_name)
         (octave)))
     (hairpin_end)))
+
+================================================================================
+Commands of one punctuation character
+================================================================================
+
+"\\{" = (
+"\\}" = )
+\version "2.26.0"
+{ c4\^ d\- e\= 1 ( f\= 1 ) g \%2 a \*3 b \{ c \} }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (string
+      (escape_sequence))
+    value: (slur_start))
+  (assignment
+    name: (string
+      (escape_sequence))
+    value: (slur_end))
+  (version
+    value: (string))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)))
+    (command)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (command)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (command)
+    (duration
+      (number))
+    (slur_start)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (command)
+    (duration
+      (number))
+    (slur_end)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (command)
+    (duration
+      (number))
+    (note
+      pitch: (pitch
+        (note_name)))
+    (command)
+    (duration
+      (number))
+    (note
+      pitch: (pitch
+        (note_name)))
+    (command)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (command)))
+
+================================================================================
+A direction before a string number
+================================================================================
+
+{ c-\1 d_\2 e^\3 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))
+    (string_number)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (string_number)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (string_number)))
+
+================================================================================
+Scheme as a text script
+================================================================================
+
+name = \markup "x"
+{ c^#name d-$(markup "x") }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (markup
+      (string)))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))
+    (text_script
+      (scheme
+        (scheme_symbol)))
+    (note
+      pitch: (pitch
+        (note_name)))
+    (text_script
+      (scheme
+        (scheme_list
+          (scheme_symbol)
+          (scheme_string))))))
+
+================================================================================
+A bare word after a direction is text
+================================================================================
+
+{ c'1^foo d4_bar }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)
+        (octave))
+      duration: (duration
+        (number)))
+    (text_script
+      (markup_word))
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)))
+    (text_script
+      (markup_word))))

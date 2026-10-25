@@ -168,6 +168,8 @@ c4 d4
 
 --------------------------------------------------------------------------------
 
+
+
 ================================================================================
 A string alone at the top level is an unfinished assignment
 :error
@@ -176,6 +178,8 @@ A string alone at the top level is an unfinished assignment
 "text"
 
 --------------------------------------------------------------------------------
+
+
 
 ================================================================================
 A property command cannot start top-level music
@@ -186,6 +190,8 @@ A property command cannot start top-level music
 
 --------------------------------------------------------------------------------
 
+
+
 ================================================================================
 A bar check at the top level takes no arguments
 :error
@@ -194,6 +200,8 @@ A bar check at the top level takes no arguments
 | c
 
 --------------------------------------------------------------------------------
+
+
 
 ================================================================================
 A score holds bare notes but a book does not
@@ -204,6 +212,8 @@ A score holds bare notes but a book does not
 \book { c4 }
 
 --------------------------------------------------------------------------------
+
+
 
 ================================================================================
 Top-level arguments run on past braces
@@ -304,3 +314,41 @@ Comma-separated number lists
       (note
         pitch: (pitch
           (note_name))))))
+
+================================================================================
+A word or a fraction as a property value, and Scheme as a property path
+================================================================================
+
+path = #'(Score Stem thickness)
+{ \set Lyrics.associatedVoice = melody \set Score.ratio = 22/7 \override $path = #1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (scheme
+      (scheme_quote
+        (scheme_list
+          (scheme_symbol)
+          (scheme_symbol)
+          (scheme_symbol)))))
+  (sequential_music
+    (set
+      path: (property_path
+        (identifier)
+        (identifier))
+      value: (identifier))
+    (set
+      path: (property_path
+        (identifier)
+        (identifier))
+      value: (fraction
+        numerator: (number)
+        denominator: (number)))
+    (override
+      path: (property_path
+        (scheme
+          (scheme_symbol)))
+      value: (scheme
+        (scheme_number)))))

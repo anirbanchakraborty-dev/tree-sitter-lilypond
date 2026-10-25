@@ -193,6 +193,8 @@ A brace inside a word opens a block
 
 --------------------------------------------------------------------------------
 
+
+
 ================================================================================
 A score inside markup returns to note mode
 ================================================================================
@@ -370,6 +372,8 @@ A word after the argument is music again
 
 --------------------------------------------------------------------------------
 
+
+
 ================================================================================
 A markup list takes braces or Scheme
 :error
@@ -378,6 +382,8 @@ A markup list takes braces or Scheme
 \markuplist a
 
 --------------------------------------------------------------------------------
+
+
 
 ================================================================================
 Markup cannot hold markup
@@ -388,6 +394,8 @@ Markup cannot hold markup
 
 --------------------------------------------------------------------------------
 
+
+
 ================================================================================
 A markup list is not music
 :error
@@ -396,6 +404,8 @@ A markup list is not music
 { c \markuplist { a } }
 
 --------------------------------------------------------------------------------
+
+
 
 ================================================================================
 A no-break space is part of a markup word
@@ -436,6 +446,8 @@ A percent sign ends a markup word inside embedded LilyPond
 x = ##{ \markup { a%b } #}
 
 --------------------------------------------------------------------------------
+
+
 
 ================================================================================
 A markup list as a property value
@@ -504,3 +516,68 @@ A markup list ends where music follows it
       (note
         pitch: (pitch
           (note_name))))))
+
+================================================================================
+Markup that ends in \etc takes no argument
+================================================================================
+
+loud = \markup \bold \etc
+{ c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (markup
+      (command)
+      (command)))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))))
+
+================================================================================
+A double angle after markup starts music, never a markup word
+================================================================================
+
+\markup \vspace #2
+<< { c } >>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup
+    (command)
+    (scheme
+      (scheme_number)))
+  (simultaneous_music
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name))))))
+
+================================================================================
+Braces after markup that ends in Scheme are music when markup cannot hold them
+================================================================================
+
+x = \markup \fret-diagram-terse #"x;3;2;o;1;o;"
+{ c^\markup \italic y }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (markup
+      (command)
+      (scheme
+        (scheme_string))))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))
+    (text_script
+      (markup
+        (command)
+        (markup_word)))))
