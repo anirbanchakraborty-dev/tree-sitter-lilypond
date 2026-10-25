@@ -1,0 +1,228 @@
+================================================================================
+Word, string and dotted names
+================================================================================
+
+melody = { c }
+"my tune" = { c }
+verse.1 = \lyricmode { a }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))))
+  (assignment
+    name: (string)
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))))
+  (assignment
+    name: (dotted_name
+      (identifier)
+      (number))
+    value: (command)
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name))))))
+
+================================================================================
+A dotted reference, with or without spaces
+================================================================================
+
+verse.1 = { a }
+{ \verse.1 \verse . 1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (dotted_name
+      (identifier)
+      (number))
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))))
+  (sequential_music
+    (dotted_name
+      (command)
+      (number))
+    (dotted_name
+      (command)
+      (number))))
+
+================================================================================
+A Bengali name
+================================================================================
+
+গান = \relative { c' }
+{ \গান }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (command)
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)
+          (octave)))))
+  (sequential_music
+    (command)))
+
+================================================================================
+A number and its unit
+================================================================================
+
+\paper { indent = 10\mm line-width = 150\mm }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (paper_block
+    (assignment
+      name: (identifier)
+      value: (number)
+      value: (command))
+    (assignment
+      name: (identifier)
+      value: (number)
+      value: (command))))
+
+================================================================================
+Assignments in a row
+================================================================================
+
+x = 1 y = 2
+z = { c }
+{ \z }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (number))
+  (assignment
+    name: (identifier)
+    value: (number))
+  (assignment
+    name: (identifier)
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))))
+  (sequential_music
+    (command)))
+
+================================================================================
+A run of arguments ends at its braces
+================================================================================
+
+x = \transpose c d { e }
+{ \x }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (command)
+    value: (note
+      pitch: (pitch
+        (note_name)))
+    value: (note
+      pitch: (pitch
+        (note_name)))
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))))
+  (sequential_music
+    (command)))
+
+================================================================================
+Blocks as values
+================================================================================
+
+x = \score { { c } }
+\score { \x }
+y = \layout { indent = 0 }
+z = \with { \consists "Ambitus_engraver" }
+w = \header { title = "T" }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (score_block
+      (sequential_music
+        (note
+          pitch: (pitch
+            (note_name))))))
+  (score_block
+    (command))
+  (assignment
+    name: (identifier)
+    value: (layout_block
+      (assignment
+        name: (identifier)
+        value: (number))))
+  (assignment
+    name: (identifier)
+    value: (with_block
+      (context_modification
+        (string))))
+  (assignment
+    name: (identifier)
+    value: (header_block
+      (assignment
+        name: (identifier)
+        value: (string)))))
+
+================================================================================
+A number takes a unit, and a command on the next line is not one
+================================================================================
+
+\paper {
+  indent = 2\cm
+  short-indent = 3 \mm
+}
+twice = 2
+\transpose c d { e }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (paper_block
+    (assignment
+      name: (identifier)
+      value: (number)
+      value: (command))
+    (assignment
+      name: (identifier)
+      value: (number)
+      value: (command)))
+  (assignment
+    name: (identifier)
+    value: (number))
+  (command)
+  (note
+    pitch: (pitch
+      (note_name)))
+  (note
+    pitch: (pitch
+      (note_name)))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))))

@@ -1,0 +1,117 @@
+================================================================================
+A new context with a name and a with block
+================================================================================
+
+\new Staff = "up" \with { \consists "Ambitus_engraver" \remove "Time_signature_engraver" } { c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (new_context
+    type: (identifier)
+    name: (string)
+    with: (with_block
+      (context_modification
+        (string))
+      (context_modification
+        (string))))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))))
+
+================================================================================
+A context by name
+================================================================================
+
+\context Voice = "one" { c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (new_context
+    type: (identifier)
+    name: (string))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))))
+
+================================================================================
+Overrides, old and new, and set
+================================================================================
+
+{ \override Staff.TimeSignature.stencil = ##f \override Staff.TimeSignature #'stencil = ##f \set Staff.instrumentName = "Guitar" c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (override
+      path: (property_path
+        (identifier)
+        (identifier)
+        (identifier))
+      value: (scheme
+        (scheme_boolean)))
+    (override
+      path: (property_path
+        (identifier)
+        (identifier)
+        (scheme
+          (scheme_quote
+            (scheme_symbol))))
+      value: (scheme
+        (scheme_boolean)))
+    (set
+      path: (property_path
+        (identifier)
+        (identifier))
+      value: (string))
+    (note
+      pitch: (pitch
+        (note_name)))))
+
+================================================================================
+Revert and unset
+================================================================================
+
+{ \revert Stem.details.beamed-lengths \unset Staff.keyAlterations c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (revert
+      path: (property_path
+        (identifier)
+        (identifier)
+        (identifier)))
+    (unset
+      path: (property_path
+        (identifier)
+        (identifier)))
+    (note
+      pitch: (pitch
+        (note_name)))))
+
+================================================================================
+Once is a command
+================================================================================
+
+{ \once \override NoteHead.color = #red c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (command)
+    (override
+      path: (property_path
+        (identifier)
+        (identifier))
+      value: (scheme
+        (scheme_symbol)))
+    (note
+      pitch: (pitch
+        (note_name)))))

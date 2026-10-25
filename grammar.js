@@ -9,8 +9,9 @@
 
 // A letter, as LilyPond's lexer counts one: an ASCII letter or any character
 // outside ASCII. The class excludes every other ASCII character, so it keeps
-// Bengali and every other script, including characters beyond the BMP.
-const LETTER = '[^\\x00-\\x40\\x5B-\\x60\\x7B-\\x7F]';
+// Bengali and every other script, including characters beyond the BMP. It
+// also excludes the byte-order mark, which LilyPond skips as whitespace.
+const LETTER = '[^\\x00-\\x40\\x5B-\\x60\\x7B-\\x7F\\uFEFF]';
 
 // A word: letters, with a single `-` or `_` allowed between two letters and no
 // digits, so `\foo2` is the command `\foo` followed by the number 2.
@@ -28,6 +29,14 @@ const schemeSymbol = (firstExcluded) => new RegExp(
   `|\\.[^${SCHEME_DELIMITER}]+`,
 );
 
+// A metronome mark: a unit, `=` and a rate, or a range of rates.
+const metronomeMark = ($) => seq(
+  field('unit', $.duration),
+  '=',
+  field('bpm', $.number),
+  optional(seq('-', field('bpm', $.number))),
+);
+
 export default grammar({
   name: 'lilypond',
 
@@ -39,12 +48,23 @@ export default grammar({
     $.scheme_block_comment,
     $._lyric_word,
     $._markup_word,
+    $._assignment_start,
     $._error_sentinel,
   ],
 
-  extras: $ => [/\s/, $.line_comment, $.block_comment],
+  // A byte-order mark after the start of a file draws a warning from LilyPond
+  // and is otherwise skipped.
+  extras: $ => [/[\s\uFEFF]/, $.line_comment, $.block_comment],
 
+  // Each word below is a keyword everywhere, so where its construct cannot
+  // stand, as `\override` cannot at the top level, it is an error and not a
+  // plain command. Reserving a word needs a word token. A longer command such
+  // as `\overrideProperty` still wins by length.
   word: $ => $.command,
+
+  reserved: {
+    global: _ => ['\\override', '\\set', '\\revert', '\\unset', '\\tempo', '\\change'],
+  },
 
   rules: {
     source_file: $ => repeat($._toplevel),
@@ -53,11 +73,15 @@ export default grammar({
       $.version,
       $.include,
       $.language,
-      $.header_block,
       $.assignment,
-      $.scheme,
-      $.sequential_music,
-      $.simultaneous_music,
+      $.header_block,
+      $.paper_block,
+      $.layout_block,
+      $.midi_block,
+      $.score_block,
+      $.book_block,
+      $.bookpart_block,
+      $._toplevel_music,
     ),
 
     version: $ => seq('\\version', field('value', $.string)),
@@ -66,39 +90,209 @@ export default grammar({
 
     language: $ => seq('\\language', field('name', $.string)),
 
-    header_block: $ => seq('\\header', '{', repeat($.assignment), '}'),
+    header_block: $ => seq(
+      '\\header',
+      '{',
+      repeat(choice($.assignment, $.scheme)),
+      '}',
+    ),
 
+    paper_block: $ => seq('\\paper', '{', repeat($._output_item), '}'),
+
+    layout_block: $ => seq('\\layout', '{', repeat($._output_item), '}'),
+
+    midi_block: $ => seq('\\midi', '{', repeat($._output_item), '}'),
+
+    _output_item: $ => choice(
+      $.assignment,
+      $.scheme,
+      $.context_definition,
+      $.command,
+      $.override,
+      $.set,
+      $.revert,
+      $.unset,
+    ),
+
+    // `\context { }` inside an output definition. In music `\context` names a
+    // context instead, which makes it a `new_context`.
+    context_definition: $ => seq(
+      '\\context',
+      '{',
+      repeat($._context_item),
+      '}',
+    ),
+
+    with_block: $ => seq('\\with', '{', repeat($._context_item), '}'),
+
+    _context_item: $ => choice(
+      $.context_modification,
+      $.assignment,
+      $.override,
+      $.set,
+      $.revert,
+      $.unset,
+      $.command,
+      $.scheme,
+    ),
+
+    context_modification: $ => seq(
+      choice(
+        '\\consists',
+        '\\remove',
+        '\\accepts',
+        '\\denies',
+        '\\alias',
+        '\\name',
+        '\\type',
+        '\\defaultchild',
+        '\\description',
+      ),
+      choice($.string, $._identifier, $.scheme),
+    ),
+
+    score_block: $ => seq(
+      '\\score',
+      '{',
+      repeat(choice($._music, $.header_block, $.layout_block, $.midi_block)),
+      '}',
+    ),
+
+    book_block: $ => seq(
+      '\\book',
+      '{',
+      repeat(choice($._book_item, $.bookpart_block)),
+      '}',
+    ),
+
+    bookpart_block: $ => seq('\\bookpart', '{', repeat($._book_item), '}'),
+
+    _book_item: $ => choice(
+      $._toplevel_music,
+      $.score_block,
+      $.header_block,
+      $.paper_block,
+    ),
+
+    // The scanner emits `_assignment_start`, a zero-width token, only where a
+    // name and then `=` lie ahead. One token of lookahead cannot see past the
+    // `y` in `x = 1 y = 2` to its `=`, so without the scanner `y` would read as
+    // a note with an octave check that continues the first value.
     assignment: $ => seq(
-      field('name', $._identifier),
+      $._assignment_start,
+      field('name', choice(
+        $._identifier,
+        $.string,
+        alias($._dotted_identifier, $.dotted_name),
+      )),
       '=',
       field('value', $._value),
     ),
 
-    _value: $ => choice($.string, $.number, $.scheme),
+    // A value is complete after braces, a block, markup, a string, a Scheme
+    // datum, or a number with its unit. Anything else starts a run of music
+    // arguments, which ends at the first complete value or, without one, runs
+    // on into whatever follows.
+    _value: $ => prec.right(choice(
+      $._value_end,
+      $.string,
+      $.scheme,
+      seq($.number, optional(alias($._unit, $.command))),
+      seq($._value_start, repeat($._music_argument), optional($._value_end)),
+    )),
 
-    // A music sequence is flat: events, the post-events that follow them and
-    // the bar checks between them are all siblings.
-    _music: $ => choice(
+    _value_end: $ => choice(
       $.sequential_music,
       $.simultaneous_music,
-      $._event,
-      $._post_event,
+      $.markup,
+      $.header_block,
+      $.paper_block,
+      $.layout_block,
+      $.midi_block,
+      $.with_block,
+      $.score_block,
+      $.book_block,
+      $.bookpart_block,
+    ),
+
+    // A unit after a number. Any variable that holds a number can be one, but
+    // only LilyPond's own units are taken here, because a command on the line
+    // after `x = 2` usually starts the next expression instead.
+    _unit: _ => token(prec(1, choice('\\mm', '\\cm', '\\in', '\\pt', '\\bp'))),
+
+    // Music at the top level of a file or a book is either complete in itself
+    // or a command, context, repeat or alternative followed by its arguments.
+    // A note, rest or duration cannot start it, and a bar check or markup
+    // takes no arguments, which is how LilyPond reads them. The arguments run
+    // on past braces, since a function may take more after a music argument,
+    // as in `\fn { c } "x"`. `\score { c }` holds bare notes and so keeps
+    // `_music`.
+    _toplevel_music: $ => prec.right(choice(
+      $._toplevel_end,
+      $.scheme,
       $.bar_check,
-      $.voice_separator,
-      // Provisional: the commands task replaces `override`.
-      $.override,
+      seq($._toplevel_start, repeat(choice($._music_argument, $._toplevel_end))),
+    )),
+
+    _toplevel_start: $ => choice(
+      $.command,
+      $.dotted_name,
+      $.new_context,
+      $.repeat,
+      $.alternative,
+    ),
+
+    _toplevel_end: $ => choice(
+      $.sequential_music,
+      $.simultaneous_music,
+      $.markup,
+    ),
+
+    // A music sequence is flat: events, the post-events that follow them, the
+    // bar checks between them and each command with its arguments are all
+    // siblings.
+    _music: $ => choice(
+      $._music_argument,
+      $.sequential_music,
+      $.simultaneous_music,
+      $.markup,
+    ),
+
+    // What a command can take as an argument without ending an assignment's
+    // value. A duration, a string and a Scheme datum stay out of
+    // `_value_start` because each one alone is already a whole value: `x = 4`
+    // is a number.
+    _music_argument: $ => choice(
+      $._value_start,
+      // A duration alone repeats the previous pitch: `c4 8 8`.
+      $.duration,
+      $.string,
       $.scheme,
     ),
 
-    _event: $ => choice(
+    _value_start: $ => choice(
       $.note,
       $.rest,
       $.skip,
       $.multi_measure_rest,
       $.chord_repetition,
       $.chord,
-      // A duration alone repeats the previous pitch: `c4 8 8`.
-      $.duration,
+      // `\time 3/4`.
+      $.fraction,
+      $._post_event,
+      $.bar_check,
+      $.voice_separator,
+      $.command,
+      $.dotted_name,
+      $.new_context,
+      $.override,
+      $.set,
+      $.revert,
+      $.unset,
+      $.repeat,
+      $.alternative,
+      $.tempo,
+      $.change,
     ),
 
     sequential_music: $ => seq(
@@ -228,17 +422,75 @@ export default grammar({
 
     voice_separator: _ => '\\\\',
 
+    // The music a new context holds follows it as the next sibling.
+    new_context: $ => prec.right(seq(
+      choice('\\new', '\\context'),
+      field('type', $._identifier),
+      optional(seq('=', field('name', choice($.string, $._identifier)))),
+      optional(field('with', $.with_block)),
+    )),
+
+    change: $ => seq(
+      '\\change',
+      field('type', $._identifier),
+      '=',
+      field('name', choice($.string, $._identifier)),
+    ),
+
     override: $ => seq(
       '\\override',
       field('path', $.property_path),
       '=',
-      field('value', $._value),
+      field('value', $._property_value),
     ),
 
-    property_path: $ => seq(
+    set: $ => seq(
+      '\\set',
+      field('path', $.property_path),
+      '=',
+      field('value', $._property_value),
+    ),
+
+    revert: $ => seq('\\revert', field('path', $.property_path)),
+
+    unset: $ => seq('\\unset', field('path', $.property_path)),
+
+    // `Staff.TimeSignature.stencil`, or the older form that gives the last
+    // part in Scheme: `Staff.TimeSignature #'stencil`.
+    property_path: $ => prec.right(seq(
       $._identifier,
       repeat(seq('.', $._identifier)),
+      repeat($.scheme),
+    )),
+
+    _property_value: $ => choice(
+      $.string,
+      $.number,
+      $.scheme,
+      $.markup,
+      $.command,
     ),
+
+    // The music a repeat applies to follows it as the next sibling.
+    repeat: $ => seq(
+      '\\repeat',
+      field('type', $._identifier),
+      field('count', $.number),
+    ),
+
+    alternative: $ => seq('\\alternative', '{', repeat($._music), '}'),
+
+    // `\tempo 4 = 120`, `\tempo "Allegro" 4 = 100-120` or `\tempo "Andante"`.
+    tempo: $ => prec.right(seq(
+      '\\tempo',
+      choice(
+        seq(
+          field('text', choice($.string, $.markup)),
+          optional(metronomeMark($)),
+        ),
+        metronomeMark($),
+      ),
+    )),
 
     // Provisional: the markup task replaces these under the same names.
     markup: $ => seq('\\markup', $._markup_argument),
@@ -370,7 +622,7 @@ export default grammar({
     // `#{ ... #}` as a Scheme datum. The scanner tracks how deep these nest.
     embedded_lilypond: $ => seq(
       $._embedded_start,
-      repeat(choice($._music, $.string, $.markup)),
+      repeat($._music),
       $._embedded_end,
     ),
 
@@ -386,5 +638,14 @@ export default grammar({
     _word: _ => token(new RegExp(WORD)),
 
     _identifier: $ => alias($._word, $.identifier),
+
+    // `\verse.1`, a reference to a variable whose name has dotted parts. In
+    // the name before `=` the first part is a word instead, and that is the
+    // same node.
+    dotted_name: $ => seq($.command, repeat1($._dotted_part)),
+
+    _dotted_identifier: $ => seq($._identifier, repeat1($._dotted_part)),
+
+    _dotted_part: $ => seq('.', choice($._identifier, $.number)),
   },
 });

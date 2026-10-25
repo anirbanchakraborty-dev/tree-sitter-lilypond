@@ -4,6 +4,12 @@ fn main() {
     let mut c_config = cc::Build::new();
     c_config.std("c11").include(src_dir);
 
+    // With a word token set, Tree-sitter writes a keyword lexer even when it
+    // extracts no keyword, and clang warns about that lexer's unused variable
+    // and label.
+    c_config.flag_if_supported("-Wno-unused-but-set-variable");
+    c_config.flag_if_supported("-Wno-unused-label");
+
     #[cfg(target_env = "msvc")]
     c_config.flag("-utf-8");
 

@@ -1,0 +1,235 @@
+================================================================================
+Commands take flat arguments
+================================================================================
+
+{ \relative c' { c d } \time 3/4 \key g \major \clef treble }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (command)
+    (note
+      pitch: (pitch
+        (note_name)
+        (octave)))
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))
+      (note
+        pitch: (pitch
+          (note_name))))
+    (command)
+    (fraction
+      numerator: (number)
+      denominator: (number))
+    (command)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (command)
+    (command)
+    (note
+      pitch: (pitch
+        (note_name)))))
+
+================================================================================
+A digit ends a command name
+================================================================================
+
+foo = { c }
+{ \foo2 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))))
+  (sequential_music
+    (command)
+    (duration
+      (number))))
+
+================================================================================
+A longer command is not cut at a keyword
+================================================================================
+
+setUp = { c }
+overrideAll = { d }
+{ c \repeatTie \newSpacingSection \setUp \overrideAll }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))))
+  (assignment
+    name: (identifier)
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))
+    (command)
+    (command)
+    (command)
+    (command)))
+
+================================================================================
+A quoted name after a backslash
+================================================================================
+
+"my tune" = { c }
+{ \"my tune" }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (string)
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))))
+  (sequential_music
+    (command)))
+
+================================================================================
+Top-level music starts with a command, a context, a repeat or a bar check
+================================================================================
+
+\clef treble
+\time 3/4
+\once \override NoteHead.color = #red
+\new Staff { c }
+\repeat volta 2 { c } \alternative { { d } { e } }
+|
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (command)
+  (note
+    pitch: (pitch
+      (note_name)))
+  (command)
+  (fraction
+    numerator: (number)
+    denominator: (number))
+  (command)
+  (override
+    path: (property_path
+      (identifier)
+      (identifier))
+    value: (scheme
+      (scheme_symbol)))
+  (new_context
+    type: (identifier))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name))))
+  (repeat
+    type: (identifier)
+    count: (number))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name))))
+  (alternative
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name))))
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))))
+  (bar_check))
+
+================================================================================
+A note cannot start top-level music
+:error
+================================================================================
+
+c4 d4
+
+--------------------------------------------------------------------------------
+
+================================================================================
+A string alone at the top level is an unfinished assignment
+:error
+================================================================================
+
+"text"
+
+--------------------------------------------------------------------------------
+
+================================================================================
+A property command cannot start top-level music
+:error
+================================================================================
+
+\override Staff.TimeSignature.stencil = ##f
+
+--------------------------------------------------------------------------------
+
+================================================================================
+A bar check at the top level takes no arguments
+:error
+================================================================================
+
+| c
+
+--------------------------------------------------------------------------------
+
+================================================================================
+A score holds bare notes but a book does not
+:error
+================================================================================
+
+\score { c4 }
+\book { c4 }
+
+--------------------------------------------------------------------------------
+
+================================================================================
+Top-level arguments run on past braces
+================================================================================
+
+fn = #(define-void-function (m s) (ly:music? string?) #f)
+\fn { c } "x"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (scheme
+      (scheme_list
+        (scheme_symbol)
+        (scheme_list
+          (scheme_symbol)
+          (scheme_symbol))
+        (scheme_list
+          (scheme_symbol)
+          (scheme_symbol))
+        (scheme_boolean))))
+  (command)
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name))))
+  (string))

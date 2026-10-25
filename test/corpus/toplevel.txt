@@ -35,3 +35,20 @@ Language
 (source_file
   (language
     name: (string)))
+
+================================================================================
+A byte-order mark after the start of a file is whitespace
+================================================================================
+
+\version "2.24.0"
+ ﻿{ ﻿c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (version
+    value: (string))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))))

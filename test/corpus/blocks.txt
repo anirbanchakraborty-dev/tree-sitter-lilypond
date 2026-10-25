@@ -1,0 +1,216 @@
+================================================================================
+Header and paper
+================================================================================
+
+\header { title = "T" }
+\paper { #(set-paper-size "a4") }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (header_block
+    (assignment
+      name: (identifier)
+      value: (string)))
+  (paper_block
+    (scheme
+      (scheme_list
+        (scheme_symbol)
+        (scheme_string)))))
+
+================================================================================
+Layout with a context definition, and midi
+================================================================================
+
+\layout { \context { \Staff \remove "Time_signature_engraver" } }
+\midi { }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (layout_block
+    (context_definition
+      (command)
+      (context_modification
+        (string))))
+  (midi_block))
+
+================================================================================
+A score with its output definitions and header
+================================================================================
+
+\score { { c } \layout { } \midi { } \header { piece = "P" } }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (score_block
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name))))
+    (layout_block)
+    (midi_block)
+    (header_block
+      (assignment
+        name: (identifier)
+        value: (string)))))
+
+================================================================================
+Books and book parts
+================================================================================
+
+\book { \bookpart { \score { { c } } } }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (book_block
+    (bookpart_block
+      (score_block
+        (sequential_music
+          (note
+            pitch: (pitch
+              (note_name))))))))
+
+================================================================================
+Repeats and alternatives
+================================================================================
+
+{ \repeat volta 2 { c } \alternative { { d } { e } } \repeat unfold 4 c4 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (repeat
+      type: (identifier)
+      count: (number))
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name))))
+    (alternative
+      (sequential_music
+        (note
+          pitch: (pitch
+            (note_name))))
+      (sequential_music
+        (note
+          pitch: (pitch
+            (note_name)))))
+    (repeat
+      type: (identifier)
+      count: (number))
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)))))
+
+================================================================================
+Tempo marks
+================================================================================
+
+{ \tempo 4 = 120 c \tempo "Allegro" 4 = 100-120 c \tempo "Andante" c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (tempo
+      unit: (duration
+        (number))
+      bpm: (number))
+    (note
+      pitch: (pitch
+        (note_name)))
+    (tempo
+      text: (string)
+      unit: (duration
+        (number))
+      bpm: (number)
+      bpm: (number))
+    (note
+      pitch: (pitch
+        (note_name)))
+    (tempo
+      text: (string))
+    (note
+      pitch: (pitch
+        (note_name)))))
+
+================================================================================
+Changing staff
+================================================================================
+
+<< \new Staff = "up" { s } \new Staff = "down" { c \change Staff = "up" c } >>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (simultaneous_music
+    (new_context
+      type: (identifier)
+      name: (string))
+    (sequential_music
+      (skip))
+    (new_context
+      type: (identifier)
+      name: (string))
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))
+      (change
+        type: (identifier)
+        name: (string))
+      (note
+        pitch: (pitch
+          (note_name))))))
+
+================================================================================
+Output definitions hold property commands
+================================================================================
+
+\layout {
+  \override StaffSymbol.staff-space = 2
+  \set Staff.instrumentName = "x"
+  \revert StaffSymbol.staff-space
+  \unset Staff.instrumentName
+}
+\midi { \set Staff.midiInstrument = "flute" }
+{ c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (layout_block
+    (override
+      path: (property_path
+        (identifier)
+        (identifier))
+      value: (number))
+    (set
+      path: (property_path
+        (identifier)
+        (identifier))
+      value: (string))
+    (revert
+      path: (property_path
+        (identifier)
+        (identifier)))
+    (unset
+      path: (property_path
+        (identifier)
+        (identifier))))
+  (midi_block
+    (set
+      path: (property_path
+        (identifier)
+        (identifier))
+      value: (string)))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))))

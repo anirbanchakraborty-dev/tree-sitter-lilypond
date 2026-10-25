@@ -1,5 +1,184 @@
 [
   {
+    "type": "alternative",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "alternative",
+          "named": true
+        },
+        {
+          "type": "articulation",
+          "named": true
+        },
+        {
+          "type": "bar_check",
+          "named": true
+        },
+        {
+          "type": "beam_end",
+          "named": true
+        },
+        {
+          "type": "beam_start",
+          "named": true
+        },
+        {
+          "type": "change",
+          "named": true
+        },
+        {
+          "type": "chord",
+          "named": true
+        },
+        {
+          "type": "chord_repetition",
+          "named": true
+        },
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "dotted_name",
+          "named": true
+        },
+        {
+          "type": "duration",
+          "named": true
+        },
+        {
+          "type": "fingering",
+          "named": true
+        },
+        {
+          "type": "fraction",
+          "named": true
+        },
+        {
+          "type": "hairpin",
+          "named": true
+        },
+        {
+          "type": "hairpin_end",
+          "named": true
+        },
+        {
+          "type": "ligature_end",
+          "named": true
+        },
+        {
+          "type": "ligature_start",
+          "named": true
+        },
+        {
+          "type": "markup",
+          "named": true
+        },
+        {
+          "type": "multi_measure_rest",
+          "named": true
+        },
+        {
+          "type": "new_context",
+          "named": true
+        },
+        {
+          "type": "note",
+          "named": true
+        },
+        {
+          "type": "override",
+          "named": true
+        },
+        {
+          "type": "phrasing_slur_end",
+          "named": true
+        },
+        {
+          "type": "phrasing_slur_start",
+          "named": true
+        },
+        {
+          "type": "repeat",
+          "named": true
+        },
+        {
+          "type": "rest",
+          "named": true
+        },
+        {
+          "type": "revert",
+          "named": true
+        },
+        {
+          "type": "scheme",
+          "named": true
+        },
+        {
+          "type": "sequential_music",
+          "named": true
+        },
+        {
+          "type": "set",
+          "named": true
+        },
+        {
+          "type": "simultaneous_music",
+          "named": true
+        },
+        {
+          "type": "skip",
+          "named": true
+        },
+        {
+          "type": "slur_end",
+          "named": true
+        },
+        {
+          "type": "slur_start",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "string_number",
+          "named": true
+        },
+        {
+          "type": "tempo",
+          "named": true
+        },
+        {
+          "type": "text_script",
+          "named": true
+        },
+        {
+          "type": "tie",
+          "named": true
+        },
+        {
+          "type": "tremolo",
+          "named": true
+        },
+        {
+          "type": "unset",
+          "named": true
+        },
+        {
+          "type": "voice_separator",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "articulation",
     "named": true,
     "fields": {},
@@ -23,17 +202,157 @@
         "required": true,
         "types": [
           {
+            "type": "dotted_name",
+            "named": true
+          },
+          {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "string",
             "named": true
           }
         ]
       },
       "value": {
-        "multiple": false,
+        "multiple": true,
         "required": true,
         "types": [
           {
+            "type": "alternative",
+            "named": true
+          },
+          {
+            "type": "articulation",
+            "named": true
+          },
+          {
+            "type": "bar_check",
+            "named": true
+          },
+          {
+            "type": "beam_end",
+            "named": true
+          },
+          {
+            "type": "beam_start",
+            "named": true
+          },
+          {
+            "type": "book_block",
+            "named": true
+          },
+          {
+            "type": "bookpart_block",
+            "named": true
+          },
+          {
+            "type": "change",
+            "named": true
+          },
+          {
+            "type": "chord",
+            "named": true
+          },
+          {
+            "type": "chord_repetition",
+            "named": true
+          },
+          {
+            "type": "command",
+            "named": true
+          },
+          {
+            "type": "dotted_name",
+            "named": true
+          },
+          {
+            "type": "duration",
+            "named": true
+          },
+          {
+            "type": "fingering",
+            "named": true
+          },
+          {
+            "type": "fraction",
+            "named": true
+          },
+          {
+            "type": "hairpin",
+            "named": true
+          },
+          {
+            "type": "hairpin_end",
+            "named": true
+          },
+          {
+            "type": "header_block",
+            "named": true
+          },
+          {
+            "type": "layout_block",
+            "named": true
+          },
+          {
+            "type": "ligature_end",
+            "named": true
+          },
+          {
+            "type": "ligature_start",
+            "named": true
+          },
+          {
+            "type": "markup",
+            "named": true
+          },
+          {
+            "type": "midi_block",
+            "named": true
+          },
+          {
+            "type": "multi_measure_rest",
+            "named": true
+          },
+          {
+            "type": "new_context",
+            "named": true
+          },
+          {
+            "type": "note",
+            "named": true
+          },
+          {
             "type": "number",
+            "named": true
+          },
+          {
+            "type": "override",
+            "named": true
+          },
+          {
+            "type": "paper_block",
+            "named": true
+          },
+          {
+            "type": "phrasing_slur_end",
+            "named": true
+          },
+          {
+            "type": "phrasing_slur_start",
+            "named": true
+          },
+          {
+            "type": "repeat",
+            "named": true
+          },
+          {
+            "type": "rest",
+            "named": true
+          },
+          {
+            "type": "revert",
             "named": true
           },
           {
@@ -41,7 +360,483 @@
             "named": true
           },
           {
+            "type": "score_block",
+            "named": true
+          },
+          {
+            "type": "sequential_music",
+            "named": true
+          },
+          {
+            "type": "set",
+            "named": true
+          },
+          {
+            "type": "simultaneous_music",
+            "named": true
+          },
+          {
+            "type": "skip",
+            "named": true
+          },
+          {
+            "type": "slur_end",
+            "named": true
+          },
+          {
+            "type": "slur_start",
+            "named": true
+          },
+          {
             "type": "string",
+            "named": true
+          },
+          {
+            "type": "string_number",
+            "named": true
+          },
+          {
+            "type": "tempo",
+            "named": true
+          },
+          {
+            "type": "text_script",
+            "named": true
+          },
+          {
+            "type": "tie",
+            "named": true
+          },
+          {
+            "type": "tremolo",
+            "named": true
+          },
+          {
+            "type": "unset",
+            "named": true
+          },
+          {
+            "type": "voice_separator",
+            "named": true
+          },
+          {
+            "type": "with_block",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "book_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "alternative",
+          "named": true
+        },
+        {
+          "type": "articulation",
+          "named": true
+        },
+        {
+          "type": "bar_check",
+          "named": true
+        },
+        {
+          "type": "beam_end",
+          "named": true
+        },
+        {
+          "type": "beam_start",
+          "named": true
+        },
+        {
+          "type": "bookpart_block",
+          "named": true
+        },
+        {
+          "type": "change",
+          "named": true
+        },
+        {
+          "type": "chord",
+          "named": true
+        },
+        {
+          "type": "chord_repetition",
+          "named": true
+        },
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "dotted_name",
+          "named": true
+        },
+        {
+          "type": "duration",
+          "named": true
+        },
+        {
+          "type": "fingering",
+          "named": true
+        },
+        {
+          "type": "fraction",
+          "named": true
+        },
+        {
+          "type": "hairpin",
+          "named": true
+        },
+        {
+          "type": "hairpin_end",
+          "named": true
+        },
+        {
+          "type": "header_block",
+          "named": true
+        },
+        {
+          "type": "ligature_end",
+          "named": true
+        },
+        {
+          "type": "ligature_start",
+          "named": true
+        },
+        {
+          "type": "markup",
+          "named": true
+        },
+        {
+          "type": "multi_measure_rest",
+          "named": true
+        },
+        {
+          "type": "new_context",
+          "named": true
+        },
+        {
+          "type": "note",
+          "named": true
+        },
+        {
+          "type": "override",
+          "named": true
+        },
+        {
+          "type": "paper_block",
+          "named": true
+        },
+        {
+          "type": "phrasing_slur_end",
+          "named": true
+        },
+        {
+          "type": "phrasing_slur_start",
+          "named": true
+        },
+        {
+          "type": "repeat",
+          "named": true
+        },
+        {
+          "type": "rest",
+          "named": true
+        },
+        {
+          "type": "revert",
+          "named": true
+        },
+        {
+          "type": "scheme",
+          "named": true
+        },
+        {
+          "type": "score_block",
+          "named": true
+        },
+        {
+          "type": "sequential_music",
+          "named": true
+        },
+        {
+          "type": "set",
+          "named": true
+        },
+        {
+          "type": "simultaneous_music",
+          "named": true
+        },
+        {
+          "type": "skip",
+          "named": true
+        },
+        {
+          "type": "slur_end",
+          "named": true
+        },
+        {
+          "type": "slur_start",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "string_number",
+          "named": true
+        },
+        {
+          "type": "tempo",
+          "named": true
+        },
+        {
+          "type": "text_script",
+          "named": true
+        },
+        {
+          "type": "tie",
+          "named": true
+        },
+        {
+          "type": "tremolo",
+          "named": true
+        },
+        {
+          "type": "unset",
+          "named": true
+        },
+        {
+          "type": "voice_separator",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "bookpart_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "alternative",
+          "named": true
+        },
+        {
+          "type": "articulation",
+          "named": true
+        },
+        {
+          "type": "bar_check",
+          "named": true
+        },
+        {
+          "type": "beam_end",
+          "named": true
+        },
+        {
+          "type": "beam_start",
+          "named": true
+        },
+        {
+          "type": "change",
+          "named": true
+        },
+        {
+          "type": "chord",
+          "named": true
+        },
+        {
+          "type": "chord_repetition",
+          "named": true
+        },
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "dotted_name",
+          "named": true
+        },
+        {
+          "type": "duration",
+          "named": true
+        },
+        {
+          "type": "fingering",
+          "named": true
+        },
+        {
+          "type": "fraction",
+          "named": true
+        },
+        {
+          "type": "hairpin",
+          "named": true
+        },
+        {
+          "type": "hairpin_end",
+          "named": true
+        },
+        {
+          "type": "header_block",
+          "named": true
+        },
+        {
+          "type": "ligature_end",
+          "named": true
+        },
+        {
+          "type": "ligature_start",
+          "named": true
+        },
+        {
+          "type": "markup",
+          "named": true
+        },
+        {
+          "type": "multi_measure_rest",
+          "named": true
+        },
+        {
+          "type": "new_context",
+          "named": true
+        },
+        {
+          "type": "note",
+          "named": true
+        },
+        {
+          "type": "override",
+          "named": true
+        },
+        {
+          "type": "paper_block",
+          "named": true
+        },
+        {
+          "type": "phrasing_slur_end",
+          "named": true
+        },
+        {
+          "type": "phrasing_slur_start",
+          "named": true
+        },
+        {
+          "type": "repeat",
+          "named": true
+        },
+        {
+          "type": "rest",
+          "named": true
+        },
+        {
+          "type": "revert",
+          "named": true
+        },
+        {
+          "type": "scheme",
+          "named": true
+        },
+        {
+          "type": "score_block",
+          "named": true
+        },
+        {
+          "type": "sequential_music",
+          "named": true
+        },
+        {
+          "type": "set",
+          "named": true
+        },
+        {
+          "type": "simultaneous_music",
+          "named": true
+        },
+        {
+          "type": "skip",
+          "named": true
+        },
+        {
+          "type": "slur_end",
+          "named": true
+        },
+        {
+          "type": "slur_start",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "string_number",
+          "named": true
+        },
+        {
+          "type": "tempo",
+          "named": true
+        },
+        {
+          "type": "text_script",
+          "named": true
+        },
+        {
+          "type": "tie",
+          "named": true
+        },
+        {
+          "type": "tremolo",
+          "named": true
+        },
+        {
+          "type": "unset",
+          "named": true
+        },
+        {
+          "type": "voice_separator",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "change",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
             "named": true
           }
         ]
@@ -155,6 +950,95 @@
     }
   },
   {
+    "type": "context_definition",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "assignment",
+          "named": true
+        },
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "context_modification",
+          "named": true
+        },
+        {
+          "type": "override",
+          "named": true
+        },
+        {
+          "type": "revert",
+          "named": true
+        },
+        {
+          "type": "scheme",
+          "named": true
+        },
+        {
+          "type": "set",
+          "named": true
+        },
+        {
+          "type": "unset",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "context_modification",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "scheme",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dotted_name",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "duration",
     "named": true,
     "fields": {},
@@ -182,6 +1066,10 @@
       "required": false,
       "types": [
         {
+          "type": "alternative",
+          "named": true
+        },
+        {
           "type": "articulation",
           "named": true
         },
@@ -198,6 +1086,10 @@
           "named": true
         },
         {
+          "type": "change",
+          "named": true
+        },
+        {
           "type": "chord",
           "named": true
         },
@@ -206,11 +1098,23 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "dotted_name",
+          "named": true
+        },
+        {
           "type": "duration",
           "named": true
         },
         {
           "type": "fingering",
+          "named": true
+        },
+        {
+          "type": "fraction",
           "named": true
         },
         {
@@ -238,6 +1142,10 @@
           "named": true
         },
         {
+          "type": "new_context",
+          "named": true
+        },
+        {
           "type": "note",
           "named": true
         },
@@ -254,7 +1162,15 @@
           "named": true
         },
         {
+          "type": "repeat",
+          "named": true
+        },
+        {
           "type": "rest",
+          "named": true
+        },
+        {
+          "type": "revert",
           "named": true
         },
         {
@@ -263,6 +1179,10 @@
         },
         {
           "type": "sequential_music",
+          "named": true
+        },
+        {
+          "type": "set",
           "named": true
         },
         {
@@ -290,6 +1210,10 @@
           "named": true
         },
         {
+          "type": "tempo",
+          "named": true
+        },
+        {
           "type": "text_script",
           "named": true
         },
@@ -299,6 +1223,10 @@
         },
         {
           "type": "tremolo",
+          "named": true
+        },
+        {
+          "type": "unset",
           "named": true
         },
         {
@@ -365,6 +1293,10 @@
         {
           "type": "assignment",
           "named": true
+        },
+        {
+          "type": "scheme",
+          "named": true
         }
       ]
     }
@@ -399,6 +1331,49 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "layout_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "assignment",
+          "named": true
+        },
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "context_definition",
+          "named": true
+        },
+        {
+          "type": "override",
+          "named": true
+        },
+        {
+          "type": "revert",
+          "named": true
+        },
+        {
+          "type": "scheme",
+          "named": true
+        },
+        {
+          "type": "set",
+          "named": true
+        },
+        {
+          "type": "unset",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -452,6 +1427,49 @@
     }
   },
   {
+    "type": "midi_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "assignment",
+          "named": true
+        },
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "context_definition",
+          "named": true
+        },
+        {
+          "type": "override",
+          "named": true
+        },
+        {
+          "type": "revert",
+          "named": true
+        },
+        {
+          "type": "scheme",
+          "named": true
+        },
+        {
+          "type": "set",
+          "named": true
+        },
+        {
+          "type": "unset",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "multi_measure_rest",
     "named": true,
     "fields": {
@@ -461,6 +1479,46 @@
         "types": [
           {
             "type": "duration",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "new_context",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "with": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "with_block",
             "named": true
           }
         ]
@@ -541,6 +1599,14 @@
         "required": true,
         "types": [
           {
+            "type": "command",
+            "named": true
+          },
+          {
+            "type": "markup",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -554,6 +1620,49 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "paper_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "assignment",
+          "named": true
+        },
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "context_definition",
+          "named": true
+        },
+        {
+          "type": "override",
+          "named": true
+        },
+        {
+          "type": "revert",
+          "named": true
+        },
+        {
+          "type": "scheme",
+          "named": true
+        },
+        {
+          "type": "set",
+          "named": true
+        },
+        {
+          "type": "unset",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -586,8 +1695,38 @@
         {
           "type": "identifier",
           "named": true
+        },
+        {
+          "type": "scheme",
+          "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "repeat",
+    "named": true,
+    "fields": {
+      "count": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "number",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -600,6 +1739,22 @@
         "types": [
           {
             "type": "duration",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "revert",
+    "named": true,
+    "fields": {
+      "path": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "property_path",
             "named": true
           }
         ]
@@ -1150,13 +2305,17 @@
     }
   },
   {
-    "type": "sequential_music",
+    "type": "score_block",
     "named": true,
     "fields": {},
     "children": {
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "alternative",
+          "named": true
+        },
         {
           "type": "articulation",
           "named": true
@@ -1174,11 +2333,23 @@
           "named": true
         },
         {
+          "type": "change",
+          "named": true
+        },
+        {
           "type": "chord",
           "named": true
         },
         {
           "type": "chord_repetition",
+          "named": true
+        },
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "dotted_name",
           "named": true
         },
         {
@@ -1190,11 +2361,23 @@
           "named": true
         },
         {
+          "type": "fraction",
+          "named": true
+        },
+        {
           "type": "hairpin",
           "named": true
         },
         {
           "type": "hairpin_end",
+          "named": true
+        },
+        {
+          "type": "header_block",
+          "named": true
+        },
+        {
+          "type": "layout_block",
           "named": true
         },
         {
@@ -1206,7 +2389,19 @@
           "named": true
         },
         {
+          "type": "markup",
+          "named": true
+        },
+        {
+          "type": "midi_block",
+          "named": true
+        },
+        {
           "type": "multi_measure_rest",
+          "named": true
+        },
+        {
+          "type": "new_context",
           "named": true
         },
         {
@@ -1226,7 +2421,15 @@
           "named": true
         },
         {
+          "type": "repeat",
+          "named": true
+        },
+        {
           "type": "rest",
+          "named": true
+        },
+        {
+          "type": "revert",
           "named": true
         },
         {
@@ -1235,6 +2438,10 @@
         },
         {
           "type": "sequential_music",
+          "named": true
+        },
+        {
+          "type": "set",
           "named": true
         },
         {
@@ -1254,7 +2461,15 @@
           "named": true
         },
         {
+          "type": "string",
+          "named": true
+        },
+        {
           "type": "string_number",
+          "named": true
+        },
+        {
+          "type": "tempo",
           "named": true
         },
         {
@@ -1270,10 +2485,235 @@
           "named": true
         },
         {
+          "type": "unset",
+          "named": true
+        },
+        {
           "type": "voice_separator",
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "sequential_music",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "alternative",
+          "named": true
+        },
+        {
+          "type": "articulation",
+          "named": true
+        },
+        {
+          "type": "bar_check",
+          "named": true
+        },
+        {
+          "type": "beam_end",
+          "named": true
+        },
+        {
+          "type": "beam_start",
+          "named": true
+        },
+        {
+          "type": "change",
+          "named": true
+        },
+        {
+          "type": "chord",
+          "named": true
+        },
+        {
+          "type": "chord_repetition",
+          "named": true
+        },
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "dotted_name",
+          "named": true
+        },
+        {
+          "type": "duration",
+          "named": true
+        },
+        {
+          "type": "fingering",
+          "named": true
+        },
+        {
+          "type": "fraction",
+          "named": true
+        },
+        {
+          "type": "hairpin",
+          "named": true
+        },
+        {
+          "type": "hairpin_end",
+          "named": true
+        },
+        {
+          "type": "ligature_end",
+          "named": true
+        },
+        {
+          "type": "ligature_start",
+          "named": true
+        },
+        {
+          "type": "markup",
+          "named": true
+        },
+        {
+          "type": "multi_measure_rest",
+          "named": true
+        },
+        {
+          "type": "new_context",
+          "named": true
+        },
+        {
+          "type": "note",
+          "named": true
+        },
+        {
+          "type": "override",
+          "named": true
+        },
+        {
+          "type": "phrasing_slur_end",
+          "named": true
+        },
+        {
+          "type": "phrasing_slur_start",
+          "named": true
+        },
+        {
+          "type": "repeat",
+          "named": true
+        },
+        {
+          "type": "rest",
+          "named": true
+        },
+        {
+          "type": "revert",
+          "named": true
+        },
+        {
+          "type": "scheme",
+          "named": true
+        },
+        {
+          "type": "sequential_music",
+          "named": true
+        },
+        {
+          "type": "set",
+          "named": true
+        },
+        {
+          "type": "simultaneous_music",
+          "named": true
+        },
+        {
+          "type": "skip",
+          "named": true
+        },
+        {
+          "type": "slur_end",
+          "named": true
+        },
+        {
+          "type": "slur_start",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "string_number",
+          "named": true
+        },
+        {
+          "type": "tempo",
+          "named": true
+        },
+        {
+          "type": "text_script",
+          "named": true
+        },
+        {
+          "type": "tie",
+          "named": true
+        },
+        {
+          "type": "tremolo",
+          "named": true
+        },
+        {
+          "type": "unset",
+          "named": true
+        },
+        {
+          "type": "voice_separator",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "set",
+    "named": true,
+    "fields": {
+      "path": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "property_path",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "command",
+            "named": true
+          },
+          {
+            "type": "markup",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "scheme",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -1285,6 +2725,10 @@
       "required": false,
       "types": [
         {
+          "type": "alternative",
+          "named": true
+        },
+        {
           "type": "articulation",
           "named": true
         },
@@ -1301,6 +2745,10 @@
           "named": true
         },
         {
+          "type": "change",
+          "named": true
+        },
+        {
           "type": "chord",
           "named": true
         },
@@ -1309,11 +2757,23 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "dotted_name",
+          "named": true
+        },
+        {
           "type": "duration",
           "named": true
         },
         {
           "type": "fingering",
+          "named": true
+        },
+        {
+          "type": "fraction",
           "named": true
         },
         {
@@ -1333,7 +2793,15 @@
           "named": true
         },
         {
+          "type": "markup",
+          "named": true
+        },
+        {
           "type": "multi_measure_rest",
+          "named": true
+        },
+        {
+          "type": "new_context",
           "named": true
         },
         {
@@ -1353,7 +2821,15 @@
           "named": true
         },
         {
+          "type": "repeat",
+          "named": true
+        },
+        {
           "type": "rest",
+          "named": true
+        },
+        {
+          "type": "revert",
           "named": true
         },
         {
@@ -1362,6 +2838,10 @@
         },
         {
           "type": "sequential_music",
+          "named": true
+        },
+        {
+          "type": "set",
           "named": true
         },
         {
@@ -1381,7 +2861,15 @@
           "named": true
         },
         {
+          "type": "string",
+          "named": true
+        },
+        {
           "type": "string_number",
+          "named": true
+        },
+        {
+          "type": "tempo",
           "named": true
         },
         {
@@ -1394,6 +2882,10 @@
         },
         {
           "type": "tremolo",
+          "named": true
+        },
+        {
+          "type": "unset",
           "named": true
         },
         {
@@ -1439,7 +2931,75 @@
       "required": false,
       "types": [
         {
+          "type": "alternative",
+          "named": true
+        },
+        {
+          "type": "articulation",
+          "named": true
+        },
+        {
           "type": "assignment",
+          "named": true
+        },
+        {
+          "type": "bar_check",
+          "named": true
+        },
+        {
+          "type": "beam_end",
+          "named": true
+        },
+        {
+          "type": "beam_start",
+          "named": true
+        },
+        {
+          "type": "book_block",
+          "named": true
+        },
+        {
+          "type": "bookpart_block",
+          "named": true
+        },
+        {
+          "type": "change",
+          "named": true
+        },
+        {
+          "type": "chord",
+          "named": true
+        },
+        {
+          "type": "chord_repetition",
+          "named": true
+        },
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "dotted_name",
+          "named": true
+        },
+        {
+          "type": "duration",
+          "named": true
+        },
+        {
+          "type": "fingering",
+          "named": true
+        },
+        {
+          "type": "fraction",
+          "named": true
+        },
+        {
+          "type": "hairpin",
+          "named": true
+        },
+        {
+          "type": "hairpin_end",
           "named": true
         },
         {
@@ -1455,7 +3015,71 @@
           "named": true
         },
         {
+          "type": "layout_block",
+          "named": true
+        },
+        {
+          "type": "ligature_end",
+          "named": true
+        },
+        {
+          "type": "ligature_start",
+          "named": true
+        },
+        {
+          "type": "markup",
+          "named": true
+        },
+        {
+          "type": "midi_block",
+          "named": true
+        },
+        {
+          "type": "multi_measure_rest",
+          "named": true
+        },
+        {
+          "type": "new_context",
+          "named": true
+        },
+        {
+          "type": "note",
+          "named": true
+        },
+        {
+          "type": "override",
+          "named": true
+        },
+        {
+          "type": "paper_block",
+          "named": true
+        },
+        {
+          "type": "phrasing_slur_end",
+          "named": true
+        },
+        {
+          "type": "phrasing_slur_start",
+          "named": true
+        },
+        {
+          "type": "repeat",
+          "named": true
+        },
+        {
+          "type": "rest",
+          "named": true
+        },
+        {
+          "type": "revert",
+          "named": true
+        },
+        {
           "type": "scheme",
+          "named": true
+        },
+        {
+          "type": "score_block",
           "named": true
         },
         {
@@ -1463,11 +3087,59 @@
           "named": true
         },
         {
+          "type": "set",
+          "named": true
+        },
+        {
           "type": "simultaneous_music",
           "named": true
         },
         {
+          "type": "skip",
+          "named": true
+        },
+        {
+          "type": "slur_end",
+          "named": true
+        },
+        {
+          "type": "slur_start",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "string_number",
+          "named": true
+        },
+        {
+          "type": "tempo",
+          "named": true
+        },
+        {
+          "type": "text_script",
+          "named": true
+        },
+        {
+          "type": "tie",
+          "named": true
+        },
+        {
+          "type": "tremolo",
+          "named": true
+        },
+        {
+          "type": "unset",
+          "named": true
+        },
+        {
           "type": "version",
+          "named": true
+        },
+        {
+          "type": "voice_separator",
           "named": true
         }
       ]
@@ -1486,6 +3158,46 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "tempo",
+    "named": true,
+    "fields": {
+      "bpm": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "number",
+            "named": true
+          }
+        ]
+      },
+      "text": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "markup",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      },
+      "unit": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "duration",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -1508,6 +3220,22 @@
     }
   },
   {
+    "type": "unset",
+    "named": true,
+    "fields": {
+      "path": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "property_path",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "version",
     "named": true,
     "fields": {
@@ -1521,6 +3249,49 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "with_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "assignment",
+          "named": true
+        },
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "context_modification",
+          "named": true
+        },
+        {
+          "type": "override",
+          "named": true
+        },
+        {
+          "type": "revert",
+          "named": true
+        },
+        {
+          "type": "scheme",
+          "named": true
+        },
+        {
+          "type": "set",
+          "named": true
+        },
+        {
+          "type": "unset",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -1624,7 +3395,51 @@
     "named": false
   },
   {
+    "type": "\\accepts",
+    "named": false
+  },
+  {
+    "type": "\\alias",
+    "named": false
+  },
+  {
+    "type": "\\alternative",
+    "named": false
+  },
+  {
+    "type": "\\book",
+    "named": false
+  },
+  {
+    "type": "\\bookpart",
+    "named": false
+  },
+  {
     "type": "\\breve",
+    "named": false
+  },
+  {
+    "type": "\\change",
+    "named": false
+  },
+  {
+    "type": "\\consists",
+    "named": false
+  },
+  {
+    "type": "\\context",
+    "named": false
+  },
+  {
+    "type": "\\defaultchild",
+    "named": false
+  },
+  {
+    "type": "\\denies",
+    "named": false
+  },
+  {
+    "type": "\\description",
     "named": false
   },
   {
@@ -1640,6 +3455,10 @@
     "named": false
   },
   {
+    "type": "\\layout",
+    "named": false
+  },
+  {
     "type": "\\longa",
     "named": false
   },
@@ -1652,7 +3471,39 @@
     "named": false
   },
   {
+    "type": "\\midi",
+    "named": false
+  },
+  {
+    "type": "\\name",
+    "named": false
+  },
+  {
+    "type": "\\new",
+    "named": false
+  },
+  {
     "type": "\\override",
+    "named": false
+  },
+  {
+    "type": "\\paper",
+    "named": false
+  },
+  {
+    "type": "\\remove",
+    "named": false
+  },
+  {
+    "type": "\\repeat",
+    "named": false
+  },
+  {
+    "type": "\\revert",
+    "named": false
+  },
+  {
+    "type": "\\score",
     "named": false
   },
   {
@@ -1660,11 +3511,31 @@
     "named": false
   },
   {
+    "type": "\\set",
+    "named": false
+  },
+  {
     "type": "\\simultaneous",
     "named": false
   },
   {
+    "type": "\\tempo",
+    "named": false
+  },
+  {
+    "type": "\\type",
+    "named": false
+  },
+  {
+    "type": "\\unset",
+    "named": false
+  },
+  {
     "type": "\\version",
+    "named": false
+  },
+  {
+    "type": "\\with",
     "named": false
   },
   {
