@@ -2,7 +2,10 @@
 
 #![allow(dead_code)]
 
+use std::fmt::Write;
 use std::path::{Path, PathBuf};
+
+use tree_sitter::{InputEdit, Node, Parser, Point, Tree};
 
 /// One example from `test/corpus/*.txt`.
 pub struct CorpusCase {
@@ -83,4 +86,73 @@ fn parse_corpus_file(path: &Path) -> Vec<CorpusCase> {
         }
     }
     cases
+}
+
+/// A parser set to LilyPond.
+pub fn parser() -> Parser {
+    let mut parser = Parser::new();
+    parser
+        .set_language(&tree_sitter_lilypond::LANGUAGE.into())
+        .expect("the grammar's ABI matches the library");
+    parser
+}
+
+/// The point at byte `offset` of `text`: its row, and its column in bytes.
+pub fn point_at(text: &str, offset: usize) -> Point {
+    let before = &text.as_bytes()[..offset];
+    let row = before.iter().filter(|&&b| b == b'\n').count();
+    let column = before.iter().rev().take_while(|&&b| b != b'\n').count();
+    Point { row, column }
+}
+
+/// `src` with `delete` bytes at `at` replaced by `insert`, and the edit that
+/// tells an old tree about the change.
+pub fn edit_for(src: &str, at: usize, delete: usize, insert: &str) -> (String, InputEdit) {
+    let edited = format!("{}{insert}{}", &src[..at], &src[at + delete..]);
+    let edit = InputEdit {
+        start_byte: at,
+        old_end_byte: at + delete,
+        new_end_byte: at + insert.len(),
+        start_position: point_at(src, at),
+        old_end_position: point_at(src, at + delete),
+        new_end_position: point_at(&edited, at + insert.len()),
+    };
+    (edited, edit)
+}
+
+/// Every node in `tree`, one per line and indented by depth, with its field
+/// name, kind, byte range and whether it is missing. Unlike `to_sexp`, this
+/// shows a node whose text moved by a byte, and the anonymous tokens.
+pub fn dump(tree: &Tree) -> String {
+    fn walk(node: Node, field: Option<&str>, depth: usize, out: &mut String) {
+        let missing = if node.is_missing() { " MISSING" } else { "" };
+        let field = field.map_or(String::new(), |f| format!("{f}: "));
+        let (start, end) = (node.start_byte(), node.end_byte());
+        writeln!(out, "{:depth$}{field}{:?} {start}..{end}{missing}", "", node.kind()).unwrap();
+        let mut cursor = node.walk();
+        if cursor.goto_first_child() {
+            loop {
+                walk(cursor.node(), cursor.field_name(), depth + 2, out);
+                if !cursor.goto_next_sibling() {
+                    break;
+                }
+            }
+        }
+    }
+    let mut out = String::new();
+    walk(tree.root_node(), None, 0, &mut out);
+    out
+}
+
+/// Replace `delete` bytes at `at` in `src` with `insert`, then parse the
+/// edited text twice: once reusing the tree of `src`, as an editor does, and
+/// once from nothing. Returns the two dumps, incremental first.
+pub fn edit_and_reparse(src: &str, at: usize, delete: usize, insert: &str) -> (String, String) {
+    let mut parser = parser();
+    let mut old = parser.parse(src, None).expect("parses");
+    let (edited, edit) = edit_for(src, at, delete, insert);
+    old.edit(&edit);
+    let incremental = parser.parse(&edited, Some(&old)).expect("reparses");
+    let fresh = parser.parse(&edited, None).expect("parses");
+    (dump(&incremental), dump(&fresh))
 }
