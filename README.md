@@ -79,15 +79,15 @@ The test fails if the 100-bar file takes more than 5 ms to parse or 1 ms to repa
 
 ## Compared with nwhetsell/tree-sitter-lilypond
 
-The grammar was measured on 2026-10-24 against the existing LilyPond grammar for Tree-sitter, [nwhetsell/tree-sitter-lilypond](https://github.com/nwhetsell/tree-sitter-lilypond) at commit `3d999a19c7b5ffb6e777ec6cbd56dc3a008bf169`, over 2,774 files that LilyPond 2.26.0 accepts and 36 files each broken in one known place. It was set to count as better only if it passed all three criteria below. It passes two and fails the first, so it is not yet better.
+The grammar was compared on 2026-10-25 with the existing LilyPond grammar for Tree-sitter, [nwhetsell/tree-sitter-lilypond](https://github.com/nwhetsell/tree-sitter-lilypond), measured on 2026-10-24 at commit `3d999a19c7b5ffb6e777ec6cbd56dc3a008bf169`, over 2,774 files that LilyPond 2.26.0 accepts and 36 files each broken in one known place. It was set to count as better only if it passed all three criteria below. It passes two and fails the first, so it is not yet better.
 
 | Criterion | This grammar | nwhetsell | Result |
 | --- | ---: | ---: | --- |
-| Accepted files with an error, fewer is better | 118 | 2 | fails |
-| Throughput, nwhetsell timed with its embedded Scheme grammar | 28,112 bytes/ms | 15,593 bytes/ms | passes |
+| Accepted files with an error, fewer is better | 6 | 2 | fails |
+| Throughput, nwhetsell timed with its embedded Scheme grammar | 26,112 bytes/ms | 15,593 bytes/ms | passes |
 | Broken files caught within one line of LilyPond's error | 30 of 36 | 16 of 36 | passes |
 
-The two grammars sit at opposite ends of one trade. nwhetsell's accepts nearly everything, so it shows almost no false errors and misses most broken files. This one rejects what it does not recognise, so it catches more real mistakes and also flags valid LilyPond it has not yet learned to read, such as `ragged-right = ##T`, `c'4\3\^` and `\new Staff \with \ctxmod`. None of the 114 Mutopia scores in the corpus shows an error. The measured commit was `ca12c11f5aa9205c116398253280037f0194ec3a`. The full report, with every broken file this grammar misses and why, and the accepted-file errors grouped by construct, is [docs/bench/verdict.md](https://github.com/anirbanchakraborty-dev/swara/blob/main/docs/bench/verdict.md) in the Swara repository.
+The two grammars sit at opposite ends of one trade. nwhetsell's accepts nearly everything, so it shows almost no false errors and misses most broken files. This one rejects what it does not recognise, so it catches more real mistakes and still flags six valid files. Three of them define new syntax while LilyPond runs them, a music function named `@` written before notes and a `#[` form for Scheme's reader, which no grammar can know in advance. The other three use rare forms inside `\with` blocks and override values. None of the 114 Mutopia scores in the corpus shows an error. The measured commit was `862c5c5861f5fca6fb881559318d36994d7891e2`, and the throughput is the median of five runs, which ranged from 21,602 to 27,997 bytes/ms while background services were busy on the same machine. The full report, with every broken file this grammar misses and why, and the accepted-file errors grouped by construct, is [docs/bench/verdict.md](https://github.com/anirbanchakraborty-dev/swara/blob/main/docs/bench/verdict.md) in the Swara repository.
 
 ## Licence
 
