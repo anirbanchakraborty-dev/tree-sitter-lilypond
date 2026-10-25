@@ -27,3 +27,11 @@ Two consequences of this are accepted.
 ## Comments
 
 A `%` followed by anything but `{` starts a `line_comment`, which ends before the next carriage return or line feed, so a file with Windows line endings parses the same as one with Unix endings. `%{` starts a `block_comment`, which ends at the first `%}`. Block comments do not nest, so `%{ a %{ b %}` is one comment, and `%%%}` closes one. An unterminated `%{` is not a comment: it shows as an error where it opens, which is where LilyPond reports it.
+
+## Reader rules inside `#{ #}`
+
+LilyPond's `#` and `$` each hand exactly one datum to Scheme. Embedded LilyPond, `#{ … #}`, is itself a Scheme datum, so it opens only where Scheme is reading one: after a second `#`, as in `##{ c #}`, or as an element of a Scheme list, as in `#(list #{ c #})` or `$(list #{ c #})`. Directly after LilyPond's own `#` or `$`, Scheme reads `{` as the start of a symbol, and no file binds such a symbol, so `x = #{ c #}` fails to compile. The tree marks that `{` as an error, and a stray `#}` outside embedded LilyPond is an error for the same reason. These verdicts come from LilyPond 2.26.0's exit status, measured on 2026-10-24.
+
+Inside embedded LilyPond, `#}` closes at its first occurrence that is not part of some other token, even when it touches the note before it, so `##{c#}` holds one note. A `#}` is hidden by a `%` line comment, by a `%{ %}` block comment and by a string, and inside embedded Scheme by a Scheme string or a `;` comment. A comment inside a markup block hides the block's closing brace as well, so `##{ \markup { 50% off } #}` leaves the block open and is an error, which is how LilyPond reports it.
+
+A Scheme symbol runs until whitespace, a parenthesis, a double quote, a `;`, a quote, a backquote or a comma. A `#}` or `}` that touches a symbol therefore belongs to it: `#'x#}` quotes the single symbol `x#}`, and `#red}` is the single symbol `red}`, which leaves the enclosing brace unclosed. Inside Scheme `%` is an ordinary symbol character, so `#(let ((%a 1)) %a)` holds no comment. A `#{` inside Scheme inside embedded LilyPond opens a new level that needs its own `#}`, and the scanner counts the levels. Scheme block comments `#| |#` nest the same way, and an unterminated one is an error where it opens.
