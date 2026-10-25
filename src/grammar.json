@@ -707,6 +707,22 @@
         },
         {
           "type": "SYMBOL",
+          "name": "chord_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "figure_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "drum_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "note_mode"
+        },
+        {
+          "type": "SYMBOL",
           "name": "header_block"
         },
         {
@@ -884,6 +900,22 @@
         {
           "type": "SYMBOL",
           "name": "lyrics_to"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "chord_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "figure_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "drum_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "note_mode"
         }
       ]
     },
@@ -917,6 +949,22 @@
         {
           "type": "SYMBOL",
           "name": "add_lyrics"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "chord_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "figure_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "drum_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "note_mode"
         }
       ]
     },
@@ -2194,8 +2242,25 @@
               "value": "\\lyricmode"
             },
             {
-              "type": "STRING",
-              "value": "\\lyrics"
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "\\lyrics"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "with_block"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -2480,6 +2545,14 @@
           "name": "repeat"
         },
         {
+          "type": "SYMBOL",
+          "name": "tempo"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "change"
+        },
+        {
           "type": "ALIAS",
           "content": {
             "type": "SYMBOL",
@@ -2487,14 +2560,6 @@
           },
           "named": true,
           "value": "alternative"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "tempo"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "change"
         },
         {
           "type": "SYMBOL",
@@ -2511,6 +2576,22 @@
         {
           "type": "SYMBOL",
           "name": "add_lyrics"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "chord_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "figure_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "drum_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "note_mode"
         }
       ]
     },
@@ -2545,6 +2626,1239 @@
     "lyric_extender": {
       "type": "STRING",
       "value": "__"
+    },
+    "chord_mode": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "\\chordmode"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "\\chords"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "with_block"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_chord_music"
+        }
+      ]
+    },
+    "_chord_music": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_chord_sequential"
+          },
+          "named": true,
+          "value": "sequential_music"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_chord_simultaneous"
+          },
+          "named": true,
+          "value": "simultaneous_music"
+        }
+      ]
+    },
+    "_chord_sequential": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "\\sequential"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_chord_item"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "_chord_simultaneous": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "<<"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_chord_item"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": ">>"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "\\simultaneous"
+            },
+            {
+              "type": "STRING",
+              "value": "{"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_chord_item"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": "}"
+            }
+          ]
+        }
+      ]
+    },
+    "_chord_item": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "chord_symbol"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "chord"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "rest"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "skip"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "multi_measure_rest"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "chord_repetition"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "duration"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "fraction"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_chord_post_event"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "bar_check"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "voice_separator"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "scheme"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "markup"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "command"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "dotted_name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "new_context"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "override"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "set"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "revert"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "unset"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "repeat"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "tempo"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "change"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_chord_alternative"
+          },
+          "named": true,
+          "value": "alternative"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_chord_music"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyric_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyrics_to"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "add_lyrics"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "chord_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "figure_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "drum_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "note_mode"
+        }
+      ]
+    },
+    "_chord_alternative": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "\\alternative"
+        },
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_chord_item"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "_chord_post_event": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "tie"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "slur_start"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "slur_end"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "phrasing_slur_start"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "phrasing_slur_end"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "beam_start"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "beam_end"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ligature_start"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ligature_end"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "hairpin"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "hairpin_end"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_chord_articulation"
+          },
+          "named": true,
+          "value": "articulation"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_chord_fingering"
+          },
+          "named": true,
+          "value": "fingering"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_chord_text_script"
+          },
+          "named": true,
+          "value": "text_script"
+        }
+      ]
+    },
+    "_chord_articulation": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "^"
+            },
+            {
+              "type": "STRING",
+              "value": "_"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "."
+            },
+            {
+              "type": "STRING",
+              "value": "-"
+            },
+            {
+              "type": "STRING",
+              "value": "^"
+            },
+            {
+              "type": "STRING",
+              "value": ">"
+            },
+            {
+              "type": "STRING",
+              "value": "_"
+            },
+            {
+              "type": "STRING",
+              "value": "!"
+            },
+            {
+              "type": "STRING",
+              "value": "+"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "command"
+            }
+          ]
+        }
+      ]
+    },
+    "_chord_fingering": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "^"
+            },
+            {
+              "type": "STRING",
+              "value": "_"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "number"
+        }
+      ]
+    },
+    "_chord_text_script": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "^"
+            },
+            {
+              "type": "STRING",
+              "value": "_"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "string"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "markup"
+            }
+          ]
+        }
+      ]
+    },
+    "chord_symbol": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "root",
+            "content": {
+              "type": "SYMBOL",
+              "name": "pitch"
+            }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "duration",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "duration"
+                }
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": ":"
+                  },
+                  {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "FIELD",
+                        "name": "modifiers",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "chord_modifiers"
+                        }
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "/"
+                  },
+                  {
+                    "type": "FIELD",
+                    "name": "inversion",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "pitch"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "/+"
+                  },
+                  {
+                    "type": "FIELD",
+                    "name": "bass",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "pitch"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "chord_modifiers": {
+      "type": "IMMEDIATE_TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 1,
+        "content": {
+          "type": "PATTERN",
+          "value": "([A-Za-z]+|\\d+[+-]?(\\.\\d+[+-]?)*|\\^)+"
+        }
+      }
+    },
+    "figure_mode": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "\\figuremode"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "\\figures"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "with_block"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_figure_music"
+        }
+      ]
+    },
+    "_figure_music": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_figure_sequential"
+          },
+          "named": true,
+          "value": "sequential_music"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_figure_simultaneous"
+          },
+          "named": true,
+          "value": "simultaneous_music"
+        }
+      ]
+    },
+    "_figure_sequential": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "\\sequential"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_figure_item"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "_figure_simultaneous": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "\\simultaneous"
+        },
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_figure_item"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "_figure_item": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "figure_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "rest"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "skip"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "multi_measure_rest"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "chord_repetition"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "duration"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "fraction"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_figure_post_event"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "bar_check"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "scheme"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "markup"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "command"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "dotted_name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "new_context"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "override"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "set"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "revert"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "unset"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "repeat"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "tempo"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "change"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_figure_alternative"
+          },
+          "named": true,
+          "value": "alternative"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_figure_music"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyric_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyrics_to"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "add_lyrics"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "chord_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "figure_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "drum_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "note_mode"
+        }
+      ]
+    },
+    "_figure_alternative": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "\\alternative"
+        },
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_figure_item"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "_figure_post_event": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "tie"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "slur_start"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "slur_end"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "phrasing_slur_start"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "phrasing_slur_end"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ligature_start"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ligature_end"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "hairpin"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "tremolo"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_figure_articulation"
+          },
+          "named": true,
+          "value": "articulation"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_figure_fingering"
+          },
+          "named": true,
+          "value": "fingering"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_figure_text_script"
+          },
+          "named": true,
+          "value": "text_script"
+        }
+      ]
+    },
+    "_figure_articulation": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "^"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "."
+            },
+            {
+              "type": "STRING",
+              "value": "-"
+            },
+            {
+              "type": "STRING",
+              "value": "^"
+            },
+            {
+              "type": "STRING",
+              "value": ">"
+            },
+            {
+              "type": "STRING",
+              "value": "_"
+            },
+            {
+              "type": "STRING",
+              "value": "!"
+            },
+            {
+              "type": "STRING",
+              "value": "+"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "command"
+            }
+          ]
+        }
+      ]
+    },
+    "_figure_fingering": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "^"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "number"
+        }
+      ]
+    },
+    "_figure_text_script": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "^"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "string"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "markup"
+            }
+          ]
+        }
+      ]
+    },
+    "figure_group": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "<"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "figure"
+            }
+          },
+          {
+            "type": "STRING",
+            "value": ">"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "duration",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "duration"
+                }
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "figure": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "number"
+            },
+            {
+              "type": "STRING",
+              "value": "_"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "string"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "markup"
+            }
+          ]
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "+"
+              },
+              {
+                "type": "STRING",
+                "value": "-"
+              },
+              {
+                "type": "STRING",
+                "value": "!"
+              },
+              {
+                "type": "STRING",
+                "value": "\\+"
+              },
+              {
+                "type": "STRING",
+                "value": "\\!"
+              },
+              {
+                "type": "STRING",
+                "value": "/"
+              },
+              {
+                "type": "STRING",
+                "value": "\\\\"
+              },
+              {
+                "type": "STRING",
+                "value": "]"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drum_mode": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "\\drummode"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "\\drums"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "with_block"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "sequential_music"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "simultaneous_music"
+            }
+          ]
+        }
+      ]
+    },
+    "note_mode": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "\\notemode"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "sequential_music"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "simultaneous_music"
+            }
+          ]
+        }
+      ]
     },
     "markup": {
       "type": "PREC_RIGHT",
@@ -3389,6 +4703,10 @@
   "conflicts": [
     [
       "markup_list"
+    ],
+    [
+      "duration",
+      "fraction"
     ]
   ],
   "precedences": [],
@@ -3481,6 +4799,34 @@
       {
         "type": "STRING",
         "value": "\\markuplist"
+      },
+      {
+        "type": "STRING",
+        "value": "\\chordmode"
+      },
+      {
+        "type": "STRING",
+        "value": "\\chords"
+      },
+      {
+        "type": "STRING",
+        "value": "\\figuremode"
+      },
+      {
+        "type": "STRING",
+        "value": "\\figures"
+      },
+      {
+        "type": "STRING",
+        "value": "\\drummode"
+      },
+      {
+        "type": "STRING",
+        "value": "\\drums"
+      },
+      {
+        "type": "STRING",
+        "value": "\\notemode"
       }
     ]
   }

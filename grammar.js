@@ -48,6 +48,60 @@ const metronomeMark = ($) => seq(
   optional(seq('-', field('bpm', $.number))),
 );
 
+// What follows the direction of an articulation: a shorthand or a command.
+const articulationMark = ($) => choice('.', '-', '^', '>', '_', '!', '+', $.command);
+
+// The post-events that take a direction, in a mode that allows only some of
+// the directions. Each is a hidden rule of its own, `_chord_articulation` and
+// so on, because an alias of a bare sequence would name each of its parts.
+const directedPostEvents = ($, mode) => [
+  alias($[`_${mode}_articulation`], $.articulation),
+  alias($[`_${mode}_fingering`], $.fingering),
+  alias($[`_${mode}_text_script`], $.text_script),
+];
+
+// The rules `directedPostEvents` names, for one mode and its directions.
+const directedPostEventRules = (mode, direction) => ({
+  [`_${mode}_articulation`]: $ => seq(direction, articulationMark($)),
+  [`_${mode}_fingering`]: $ => seq(direction, $.number),
+  [`_${mode}_text_script`]: $ => seq(direction, choice($.string, $.markup)),
+});
+
+// Braces holding one mode's items, with `\sequential` before them if wanted.
+const sequentialOf = (item) => seq(optional('\\sequential'), '{', repeat(item), '}');
+
+// `<< >>` holding one mode's items, or `\simultaneous` and braces.
+const simultaneousOf = (item) => choice(
+  seq('<<', repeat(item), '>>'),
+  seq('\\simultaneous', '{', repeat(item), '}'),
+);
+
+// The constructs every mode keeps, because a backslash starts a command
+// whichever mode reads the words.
+const keywordItems = ($) => [
+  $.command,
+  $.dotted_name,
+  $.new_context,
+  $.override,
+  $.set,
+  $.revert,
+  $.unset,
+  $.repeat,
+  $.tempo,
+  $.change,
+];
+
+// The modes, any of which can stand inside another.
+const modes = ($) => [
+  $.lyric_mode,
+  $.lyrics_to,
+  $.add_lyrics,
+  $.chord_mode,
+  $.figure_mode,
+  $.drum_mode,
+  $.note_mode,
+];
+
 export default grammar({
   name: 'lilypond',
 
@@ -76,14 +130,18 @@ export default grammar({
   word: $ => $.command,
 
   // Where a markup list ends is decided by which reading parses. See
-  // `markup_list`.
-  conflicts: $ => [[$.markup_list]],
+  // `markup_list`. In chord mode a number before `/` may end a duration, with
+  // an inversion after it as in `c4/e`, or start a fraction, as in `c1*3/4`,
+  // and again the reading that parses wins.
+  conflicts: $ => [[$.markup_list], [$.duration, $.fraction]],
 
   reserved: {
     global: _ => [
       '\\override', '\\set', '\\revert', '\\unset', '\\tempo', '\\change',
       '\\lyricmode', '\\lyrics', '\\addlyrics', '\\lyricsto',
       '\\markup', '\\markuplist',
+      '\\chordmode', '\\chords', '\\figuremode', '\\figures', '\\drummode', '\\drums',
+      '\\notemode',
     ],
   },
 
@@ -234,6 +292,10 @@ export default grammar({
       $.markup_list,
       $.lyric_mode,
       $.lyrics_to,
+      $.chord_mode,
+      $.figure_mode,
+      $.drum_mode,
+      $.note_mode,
       $.header_block,
       $.paper_block,
       $.layout_block,
@@ -281,6 +343,10 @@ export default grammar({
       $.markup_list,
       $.lyric_mode,
       $.lyrics_to,
+      $.chord_mode,
+      $.figure_mode,
+      $.drum_mode,
+      $.note_mode,
     ),
 
     // A music sequence is flat: events, the post-events that follow them, the
@@ -294,6 +360,10 @@ export default grammar({
       $.lyric_mode,
       $.lyrics_to,
       $.add_lyrics,
+      $.chord_mode,
+      $.figure_mode,
+      $.drum_mode,
+      $.note_mode,
     ),
 
     // What a command can take as an argument without ending an assignment's
@@ -333,17 +403,9 @@ export default grammar({
       $.change,
     ),
 
-    sequential_music: $ => seq(
-      optional('\\sequential'),
-      '{',
-      repeat($._music),
-      '}',
-    ),
+    sequential_music: $ => sequentialOf($._music),
 
-    simultaneous_music: $ => choice(
-      seq('<<', repeat($._music), '>>'),
-      seq('\\simultaneous', '{', repeat($._music), '}'),
-    ),
+    simultaneous_music: $ => simultaneousOf($._music),
 
     // Each optional part attaches to the note when it can, so `c 4` is one
     // note with a duration, as LilyPond reads it.
@@ -443,10 +505,7 @@ export default grammar({
 
     _direction: _ => choice('-', '^', '_'),
 
-    articulation: $ => seq(
-      $._direction,
-      choice('.', '-', '^', '>', '_', '!', '+', $.command),
-    ),
+    articulation: $ => seq($._direction, articulationMark($)),
 
     fingering: $ => seq($._direction, $.number),
 
@@ -533,8 +592,12 @@ export default grammar({
 
     // `\lyricmode` and `\lyrics` switch to lyric mode for the braces or
     // `<< >>` that follow. Inside, those keep their usual names and hold
-    // lyric items.
-    lyric_mode: $ => seq(choice('\\lyricmode', '\\lyrics'), $._lyric_music),
+    // lyric items. `\lyrics` also creates a context, so a `\with` block may
+    // come first, as it may after `\chords`, `\figures` and `\drums`.
+    lyric_mode: $ => seq(
+      choice('\\lyricmode', seq('\\lyrics', optional($.with_block))),
+      $._lyric_music,
+    ),
 
     // `\addlyrics` and `\lyricsto` switch to lyric mode only for braces or
     // `<< >>`. A variable after either stays a `command`.
@@ -553,17 +616,9 @@ export default grammar({
       alias($._lyric_simultaneous, $.simultaneous_music),
     ),
 
-    _lyric_sequential: $ => seq(
-      optional('\\sequential'),
-      '{',
-      repeat($._lyric_item),
-      '}',
-    ),
+    _lyric_sequential: $ => sequentialOf($._lyric_item),
 
-    _lyric_simultaneous: $ => choice(
-      seq('<<', repeat($._lyric_item), '>>'),
-      seq('\\simultaneous', '{', repeat($._lyric_item), '}'),
-    ),
+    _lyric_simultaneous: $ => simultaneousOf($._lyric_item),
 
     // Lyric mode changes only how words are read. A digit still starts a
     // duration and a backslash a command, so the keyword constructs stand
@@ -579,21 +634,10 @@ export default grammar({
       $.markup,
       $.bar_check,
       $.voice_separator,
-      $.command,
-      $.dotted_name,
-      $.new_context,
-      $.override,
-      $.set,
-      $.revert,
-      $.unset,
-      $.repeat,
+      ...keywordItems($),
       alias($._lyric_alternative, $.alternative),
-      $.tempo,
-      $.change,
       $._lyric_music,
-      $.lyric_mode,
-      $.lyrics_to,
-      $.add_lyrics,
+      ...modes($),
     ),
 
     _lyric_alternative: $ => seq('\\alternative', '{', repeat($._lyric_item), '}'),
@@ -602,6 +646,161 @@ export default grammar({
     lyric_hyphen: _ => '--',
 
     lyric_extender: _ => '__',
+
+    // `\chordmode` and `\chords` switch to chord mode, where a word is the
+    // root of a chord name.
+    chord_mode: $ => seq(
+      choice('\\chordmode', seq('\\chords', optional($.with_block))),
+      $._chord_music,
+    ),
+
+    _chord_music: $ => choice(
+      alias($._chord_sequential, $.sequential_music),
+      alias($._chord_simultaneous, $.simultaneous_music),
+    ),
+
+    _chord_sequential: $ => sequentialOf($._chord_item),
+
+    _chord_simultaneous: $ => simultaneousOf($._chord_item),
+
+    // Chord mode reads `-`, `^`, `.`, `:` and `/` as parts of a chord name, so
+    // no tremolo follows a chord and a post-event's direction is `^` or `_`.
+    _chord_item: $ => choice(
+      $.chord_symbol,
+      $.chord,
+      $.rest,
+      $.skip,
+      $.multi_measure_rest,
+      $.chord_repetition,
+      $.duration,
+      $.fraction,
+      $._chord_post_event,
+      $.bar_check,
+      $.voice_separator,
+      $.string,
+      $.scheme,
+      $.markup,
+      ...keywordItems($),
+      alias($._chord_alternative, $.alternative),
+      $._chord_music,
+      ...modes($),
+    ),
+
+    _chord_alternative: $ => seq('\\alternative', '{', repeat($._chord_item), '}'),
+
+    _chord_post_event: $ => choice(
+      $.tie,
+      $.slur_start,
+      $.slur_end,
+      $.phrasing_slur_start,
+      $.phrasing_slur_end,
+      $.beam_start,
+      $.beam_end,
+      $.ligature_start,
+      $.ligature_end,
+      $.hairpin,
+      $.hairpin_end,
+      ...directedPostEvents($, 'chord'),
+    ),
+
+    ...directedPostEventRules('chord', choice('^', '_')),
+
+    // A chord name: its root and duration, then the modifiers after `:`, the
+    // note an inversion puts in the bass after `/`, and a bass note to add
+    // after `/+`, in that order.
+    chord_symbol: $ => prec.right(seq(
+      field('root', $.pitch),
+      optional(field('duration', $.duration)),
+      optional(seq(':', optional(field('modifiers', $.chord_modifiers)))),
+      optional(seq('/', field('inversion', $.pitch))),
+      optional(seq('/+', field('bass', $.pitch))),
+    )),
+
+    // Words such as `m` and `sus`, steps with an optional `+` or `-`, `.`
+    // between two steps, and `^` before the steps to leave out. The token
+    // touches the colon, so in `c: e` the `e` is the next chord, as LilyPond
+    // reads a note name there.
+    chord_modifiers: _ => token.immediate(prec(1, /([A-Za-z]+|\d+[+-]?(\.\d+[+-]?)*|\^)+/)),
+
+    // `\figuremode` and `\figures` switch to figure mode, which reads every
+    // `<` as the start of a figure group, so `<< >>` cannot stand there.
+    figure_mode: $ => seq(
+      choice('\\figuremode', seq('\\figures', optional($.with_block))),
+      $._figure_music,
+    ),
+
+    _figure_music: $ => choice(
+      alias($._figure_sequential, $.sequential_music),
+      alias($._figure_simultaneous, $.simultaneous_music),
+    ),
+
+    _figure_sequential: $ => sequentialOf($._figure_item),
+
+    _figure_simultaneous: $ => seq('\\simultaneous', '{', repeat($._figure_item), '}'),
+
+    // Figure mode reads `-`, `_`, `[`, `]`, `\!` and `\\` as parts of a figure,
+    // so a post-event's direction is `^`, and no beam, hairpin end or voice
+    // separator stands there.
+    _figure_item: $ => choice(
+      $.figure_group,
+      $.rest,
+      $.skip,
+      $.multi_measure_rest,
+      $.chord_repetition,
+      $.duration,
+      $.fraction,
+      $._figure_post_event,
+      $.bar_check,
+      $.string,
+      $.scheme,
+      $.markup,
+      ...keywordItems($),
+      alias($._figure_alternative, $.alternative),
+      $._figure_music,
+      ...modes($),
+    ),
+
+    _figure_alternative: $ => seq('\\alternative', '{', repeat($._figure_item), '}'),
+
+    _figure_post_event: $ => choice(
+      $.tie,
+      $.slur_start,
+      $.slur_end,
+      $.phrasing_slur_start,
+      $.phrasing_slur_end,
+      $.ligature_start,
+      $.ligature_end,
+      $.hairpin,
+      $.tremolo,
+      ...directedPostEvents($, 'figure'),
+    ),
+
+    ...directedPostEventRules('figure', '^'),
+
+    figure_group: $ => prec.right(seq(
+      '<',
+      repeat($.figure),
+      '>',
+      optional(field('duration', $.duration)),
+    )),
+
+    // A number, `_` for no number, a string or markup. A `[` before it opens a
+    // bracket and a `]` after it closes one. Alterations (`+`, `-`, `!`) and
+    // modifications (`\+`, `\!`, `/`, `\\`) follow it.
+    figure: $ => seq(
+      optional('['),
+      choice($.number, '_', $.string, $.markup),
+      repeat(choice('+', '-', '!', '\\+', '\\!', '/', '\\\\', ']')),
+    ),
+
+    // Drum mode reads drum names where notes stand. Which names exist is known
+    // only when LilyPond runs, so they are notes here.
+    drum_mode: $ => seq(
+      choice('\\drummode', seq('\\drums', optional($.with_block))),
+      choice($.sequential_music, $.simultaneous_music),
+    ),
+
+    note_mode: $ => seq('\\notemode', choice($.sequential_music, $.simultaneous_music)),
 
     // Markup is `\markup`, then any markup commands and their Scheme
     // arguments, then at most one argument: braces, a word, a string or a

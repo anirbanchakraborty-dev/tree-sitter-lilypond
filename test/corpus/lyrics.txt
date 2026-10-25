@@ -596,3 +596,34 @@ A no-break space alone is a lyric word
       (lyric_word)
       (lyric_word)
       (lyric_word))))
+
+================================================================================
+A with block after lyrics
+================================================================================
+
+\lyrics \with { } { a }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (lyric_mode
+    (with_block)
+    (sequential_music
+      (lyric_word))))
+
+================================================================================
+Other modes inside lyric mode
+================================================================================
+
+\lyricmode { \chordmode { c } }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (lyric_mode
+    (sequential_music
+      (chord_mode
+        (sequential_music
+          (chord_symbol
+            root: (pitch
+              (note_name))))))))

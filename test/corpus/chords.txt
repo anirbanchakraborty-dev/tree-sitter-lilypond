@@ -1,0 +1,498 @@
+================================================================================
+Chord names with modifiers, inversions and bass notes
+================================================================================
+
+\chordmode { c1:m7 d:7/fis e:sus4 f:9^7 g:maj7.11+ c/+e }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (chord_mode
+    (sequential_music
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        duration: (duration
+          (number))
+        modifiers: (chord_modifiers))
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        modifiers: (chord_modifiers)
+        inversion: (pitch
+          (note_name)))
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        modifiers: (chord_modifiers))
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        modifiers: (chord_modifiers))
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        modifiers: (chord_modifiers))
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        bass: (pitch
+          (note_name))))))
+
+================================================================================
+Chords with durations
+================================================================================
+
+\chords { c2 g }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (chord_mode
+    (sequential_music
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        duration: (duration
+          (number)))
+      (chord_symbol
+        root: (pitch
+          (note_name))))))
+
+================================================================================
+Chord mode after a new context
+================================================================================
+
+\new ChordNames \chordmode { c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (new_context
+    type: (identifier))
+  (chord_mode
+    (sequential_music
+      (chord_symbol
+        root: (pitch
+          (note_name))))))
+
+================================================================================
+An inversion and a bass note together
+================================================================================
+
+\chordmode { c:7/e/+f }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (chord_mode
+    (sequential_music
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        modifiers: (chord_modifiers)
+        inversion: (pitch
+          (note_name))
+        bass: (pitch
+          (note_name))))))
+
+================================================================================
+Modifiers after a duration with dots and a multiplier
+================================================================================
+
+\chordmode { c4.:m c1*2:dim7 c4:16 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (chord_mode
+    (sequential_music
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        duration: (duration
+          (number))
+        modifiers: (chord_modifiers))
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        duration: (duration
+          (number)
+          (number))
+        modifiers: (chord_modifiers))
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        duration: (duration
+          (number))
+        modifiers: (chord_modifiers)))))
+
+================================================================================
+Altered steps, a chord without modifiers and an octave on the root
+================================================================================
+
+\chordmode { c:m7.5- c:3-.5+ c:7-^5 c:1.3.5^3 c:7^ c: c'1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (chord_mode
+    (sequential_music
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        modifiers: (chord_modifiers))
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        modifiers: (chord_modifiers))
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        modifiers: (chord_modifiers))
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        modifiers: (chord_modifiers))
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        modifiers: (chord_modifiers))
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (chord_symbol
+        root: (pitch
+          (note_name)
+          (octave))
+        duration: (duration
+          (number))))))
+
+================================================================================
+A word after a spaced colon is the next chord
+================================================================================
+
+\chordmode { c: e c:m e }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (chord_mode
+    (sequential_music
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        modifiers: (chord_modifiers))
+      (chord_symbol
+        root: (pitch
+          (note_name))))))
+
+================================================================================
+Notes in angle brackets, rests, skips and chord repeats
+================================================================================
+
+\chordmode { <c e g>4 r s R1 q }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (chord_mode
+    (sequential_music
+      (chord
+        (note
+          pitch: (pitch
+            (note_name)))
+        (note
+          pitch: (pitch
+            (note_name)))
+        (note
+          pitch: (pitch
+            (note_name)))
+        duration: (duration
+          (number)))
+      (rest)
+      (skip)
+      (multi_measure_rest
+        duration: (duration
+          (number)))
+      (chord_repetition))))
+
+================================================================================
+Post-events in chord mode
+================================================================================
+
+\chordmode { c4_"x" c_\fermata c^\fermata c_1 c~ c( d) c\< d\! c[ d] }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (chord_mode
+    (sequential_music
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        duration: (duration
+          (number)))
+      (text_script
+        (string))
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (articulation
+        (command))
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (articulation
+        (command))
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (fingering
+        (number))
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (tie)
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (slur_start)
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (slur_end)
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (hairpin)
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (hairpin_end)
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (beam_start)
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (beam_end))))
+
+================================================================================
+Commands, fractions and a lone duration in chord mode
+================================================================================
+
+\chordmode { \time 3/4 c2. 4 | \bar "|." }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (chord_mode
+    (sequential_music
+      (command)
+      (fraction
+        numerator: (number)
+        denominator: (number))
+      (chord_symbol
+        root: (pitch
+          (note_name))
+        duration: (duration
+          (number)))
+      (duration
+        (number))
+      (bar_check)
+      (command)
+      (string))))
+
+================================================================================
+A with block after chords
+================================================================================
+
+\chords \with { } { c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (chord_mode
+    (with_block)
+    (sequential_music
+      (chord_symbol
+        root: (pitch
+          (note_name))))))
+
+================================================================================
+Chord mode in double angle brackets and with sequential
+================================================================================
+
+\chordmode << c \\ d >>
+\chordmode \sequential { c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (chord_mode
+    (simultaneous_music
+      (chord_symbol
+        root: (pitch
+          (note_name)))
+      (voice_separator)
+      (chord_symbol
+        root: (pitch
+          (note_name)))))
+  (chord_mode
+    (sequential_music
+      (chord_symbol
+        root: (pitch
+          (note_name))))))
+
+================================================================================
+Chord mode as a value, in music, in a score and as an argument
+================================================================================
+
+x = \chordmode { c }
+{ \chordmode { c } }
+\score { \chords { c } }
+\transpose c d \chordmode { c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (chord_mode
+      (sequential_music
+        (chord_symbol
+          root: (pitch
+            (note_name))))))
+  (sequential_music
+    (chord_mode
+      (sequential_music
+        (chord_symbol
+          root: (pitch
+            (note_name))))))
+  (score_block
+    (chord_mode
+      (sequential_music
+        (chord_symbol
+          root: (pitch
+            (note_name))))))
+  (command)
+  (note
+    pitch: (pitch
+      (note_name)))
+  (note
+    pitch: (pitch
+      (note_name)))
+  (chord_mode
+    (sequential_music
+      (chord_symbol
+        root: (pitch
+          (note_name))))))
+
+================================================================================
+Modes nest inside chord mode
+================================================================================
+
+\chordmode { \lyricmode { a } \drummode { bd } }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (chord_mode
+    (sequential_music
+      (lyric_mode
+        (sequential_music
+          (lyric_word)))
+      (drum_mode
+        (sequential_music
+          (note
+            pitch: (pitch
+              (note_name))))))))
+
+================================================================================
+A dash articulation in chord mode
+:error
+================================================================================
+
+\chordmode { c4-. }
+
+--------------------------------------------------------------------------------
+
+================================================================================
+A step separator at the end of the modifiers
+:error
+================================================================================
+
+\chordmode { c:7. }
+
+--------------------------------------------------------------------------------
+
+================================================================================
+A minus after a modifier word
+:error
+================================================================================
+
+\chordmode { c:m- }
+
+--------------------------------------------------------------------------------
+
+================================================================================
+A plus before a step
+:error
+================================================================================
+
+\chordmode { c:+7 }
+
+--------------------------------------------------------------------------------
+
+================================================================================
+Modifiers after an inversion
+:error
+================================================================================
+
+\chordmode { c/e:7 }
+
+--------------------------------------------------------------------------------
+
+================================================================================
+An inversion after a bass note
+:error
+================================================================================
+
+\chordmode { c:m7/+e/f }
+
+--------------------------------------------------------------------------------
+
+================================================================================
+Modifiers on a chord repeat
+:error
+================================================================================
+
+\chordmode { q:m }
+
+--------------------------------------------------------------------------------
+
+================================================================================
+A forced accidental on a chord root
+:error
+================================================================================
+
+\chordmode { c! }
+
+--------------------------------------------------------------------------------
+
+================================================================================
+Chord mode without braces
+:error
+================================================================================
+
+\chordmode c
+
+--------------------------------------------------------------------------------
