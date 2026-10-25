@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  TREE_SITTER_VERSION: 0.27.1
+  RUST_VERSION: 1.98.0
+  LILYPOND_VERSION: 2.26.0
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Install the Tree-sitter CLI
+        run: npm install --global "tree-sitter-cli@${TREE_SITTER_VERSION}"
+
+      - name: Install Rust
+        run: |
+          rustup toolchain install "${RUST_VERSION}" --profile minimal
+          rustup default "${RUST_VERSION}"
+
+      # The agreement test runs where LilyPond is installed and skips with one
+      # line elsewhere, so only the Linux job installs it.
+      - name: Cache LilyPond
+        if: runner.os == 'Linux'
+        id: lilypond-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/lilypond
+          key: lilypond-${{ env.LILYPOND_VERSION }}-linux-x86_64
+
+      - name: Install LilyPond
+        if: runner.os == 'Linux' && steps.lilypond-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/lilypond
+          curl --fail --location --silent --show-error \
+            "https://gitlab.com/lilypond/lilypond/-/releases/v${LILYPOND_VERSION}/downloads/lilypond-${LILYPOND_VERSION}-linux-x86_64.tar.gz" \
+            | tar -xz -C ~/lilypond --strip-components=1
+
+      - name: Put LilyPond on the path
+        if: runner.os == 'Linux'
+        run: |
+          echo "$HOME/lilypond/bin" >> "$GITHUB_PATH"
+
+      - name: Check that the generated parser is committed
+        run: |
+          tree-sitter generate
+          git diff --exit-code src/
+
+      - name: Corpus tests
+        run: tree-sitter test
+
+      - name: Rust tests
+        run: cargo test --locked

@@ -1,0 +1,5 @@
+{
+  "name": "tree-sitter-lilypond",
+  "private": true,
+  "type": "module"
+}

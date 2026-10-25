@@ -1,0 +1,15 @@
+* text=auto eol=lf
+
+# The CRLF example must reach the parser with its carriage returns intact.
+test/corpus/comments.txt -text
+
+# Written by tree-sitter generate
+src/*.json linguist-generated
+src/parser.c linguist-generated
+src/tree_sitter/* linguist-generated
+
+# Written by tree-sitter init
+bindings/c/** linguist-generated
+CMakeLists.txt linguist-generated
+Makefile linguist-generated
+Cargo.lock linguist-generated

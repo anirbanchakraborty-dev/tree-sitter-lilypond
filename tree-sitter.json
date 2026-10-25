@@ -1,0 +1,40 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "lilypond",
+      "camelcase": "LilyPond",
+      "title": "LilyPond",
+      "scope": "source.lilypond",
+      "file-types": [
+        "ly",
+        "ily"
+      ],
+      "injection-regex": "^(lilypond|ly)$",
+      "highlights": "queries/highlights.scm"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "LilyPond grammar for Tree-sitter, with embedded Scheme in the same tree",
+    "authors": [
+      {
+        "name": "Anirban Chakraborty"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/anirbanchakraborty-dev/tree-sitter-lilypond"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": false,
+    "java": false,
+    "node": false,
+    "python": false,
+    "rust": true,
+    "swift": false,
+    "zig": false
+  }
+}
