@@ -1754,6 +1754,10 @@
           "named": true
         },
         {
+          "type": "tempo",
+          "named": true
+        },
+        {
           "type": "unset",
           "named": true
         }
@@ -1962,6 +1966,10 @@
         },
         {
           "type": "set",
+          "named": true
+        },
+        {
+          "type": "tempo",
           "named": true
         },
         {
@@ -2181,6 +2189,10 @@
         },
         {
           "type": "set",
+          "named": true
+        },
+        {
+          "type": "tempo",
           "named": true
         },
         {

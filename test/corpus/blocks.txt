@@ -36,6 +36,25 @@ Layout with a context definition, and midi
   (midi_block))
 
 ================================================================================
+A tempo inside midi and layout
+================================================================================
+
+\midi { \tempo 4 = 90 }
+\layout { \tempo "Slow" }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (midi_block
+    (tempo
+      unit: (duration
+        (number))
+      bpm: (number)))
+  (layout_block
+    (tempo
+      text: (string))))
+
+================================================================================
 A score with its output definitions and header
 ================================================================================
 

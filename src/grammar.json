@@ -253,6 +253,10 @@
         {
           "type": "SYMBOL",
           "name": "unset"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "tempo"
         }
       ]
     },

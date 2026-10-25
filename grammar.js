@@ -191,6 +191,7 @@ export default grammar({
       $.set,
       $.revert,
       $.unset,
+      $.tempo,
     ),
 
     // `\context { }` inside an output definition. In music `\context` names a
