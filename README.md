@@ -4,7 +4,7 @@ A [Tree-sitter](https://tree-sitter.github.io/) grammar for [LilyPond](https://l
 
 ## Status
 
-Early. The grammar currently covers comments, strings and the top-level `\version`, `\include`, `\language` and `\header` forms. Music, embedded Scheme, the input modes and the queries follow. The names of the nodes the grammar produces, and the rules behind them, are fixed in [docs/nodes.md](docs/nodes.md).
+Version 0.1.0. The grammar reads whole LilyPond 2.26 files: the top-level forms, music, embedded Scheme and the LilyPond nested back inside it, and the lyric, markup, chord, figure and drum modes. It ships highlight, fold, indent and locals queries. It parses faster than [nwhetsell/tree-sitter-lilypond](https://github.com/nwhetsell/tree-sitter-lilypond) and catches more broken files, but it still shows an error in 432 of the 2,774 valid files in its test corpus, so it is not yet better overall, as the comparison below sets out. The names of the nodes the grammar produces, and the rules behind them, are fixed in [docs/nodes.md](docs/nodes.md).
 
 ## What it aims for
 
@@ -12,6 +12,39 @@ Early. The grammar currently covers comments, strings and the top-level `\versio
 - **One tree for both languages.** Embedded Scheme, and LilyPond embedded inside that Scheme with `#{ #}`, parse into the same tree as the music around them.
 - **Speed.** The grammar is measured against a fixed corpus of public scores, and a one-character edit in a large score must reparse within an editor's colouring budget.
 - **Queries with no word lists.** The highlight, fold, indent and locals queries colour by the shape of the syntax, not by lists of LilyPond command names.
+
+## Using it in Neovim
+
+[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter), on its `main` branch, installs a parser that is not on its own list from a snippet in a `User TSUpdate` autocommand. Neovim already gives `.ly` and `.ily` files the `lilypond` filetype, which matches the parser's name, so the parser needs no further registration. The second autocommand turns on Tree-sitter highlighting in each LilyPond buffer, which nvim-treesitter's `main` branch leaves to the user's configuration.
+
+```lua
+vim.api.nvim_create_autocmd('User', { pattern = 'TSUpdate',
+  callback = function()
+    require('nvim-treesitter.parsers').lilypond = {
+      install_info = {
+        url = 'https://github.com/anirbanchakraborty-dev/tree-sitter-lilypond',
+        revision = 'v0.1.0',
+        queries = 'queries',
+      },
+    }
+  end,
+})
+vim.api.nvim_create_autocmd('FileType', { pattern = 'lilypond',
+  callback = function() vim.treesitter.start() end,
+})
+```
+
+Then run `:TSInstall lilypond` once. Building the parser needs the Tree-sitter CLI, version 0.26.1 or later, and a C compiler on the path, as every nvim-treesitter install does.
+
+## Using it from Rust
+
+```toml
+[dependencies]
+tree-sitter = "0.27.1"
+tree-sitter-lilypond = { git = "https://github.com/anirbanchakraborty-dev/tree-sitter-lilypond", tag = "v0.1.0" }
+```
+
+The crate exposes the language as `tree_sitter_lilypond::LANGUAGE`, the node types as `NODE_TYPES`, and the four queries as `HIGHLIGHTS_QUERY`, `FOLDS_QUERY`, `INDENTS_QUERY` and `LOCALS_QUERY`.
 
 ## Building and testing
 
