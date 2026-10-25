@@ -4,7 +4,7 @@ A [Tree-sitter](https://tree-sitter.github.io/) grammar for [LilyPond](https://l
 
 ## Status
 
-Version 0.1.0. The grammar reads whole LilyPond 2.26 files: the top-level forms, music, embedded Scheme and the LilyPond nested back inside it, and the lyric, markup, chord, figure and drum modes. It ships highlight, fold, indent and locals queries. It parses faster than [nwhetsell/tree-sitter-lilypond](https://github.com/nwhetsell/tree-sitter-lilypond) and catches more broken files, but it still shows an error in 432 of the 2,774 valid files in its test corpus, so it is not yet better overall, as the comparison below sets out. The names of the nodes the grammar produces, and the rules behind them, are fixed in [docs/nodes.md](docs/nodes.md).
+Version 0.1.0. The grammar reads whole LilyPond 2.26 files: the top-level forms, music, embedded Scheme and the LilyPond nested back inside it, and the lyric, markup, chord, figure and drum modes. It ships highlight, fold, indent and locals queries. It parses faster than [nwhetsell/tree-sitter-lilypond](https://github.com/nwhetsell/tree-sitter-lilypond) and catches more broken files, but it still shows an error in 6 of the 2,774 valid files in its test corpus, where nwhetsell's shows one in 2, so it is not yet better overall, as the comparison below sets out. The names of the nodes the grammar produces, and the rules behind them, are fixed in [docs/nodes.md](docs/nodes.md).
 
 ## What it aims for
 
