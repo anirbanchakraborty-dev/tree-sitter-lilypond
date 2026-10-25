@@ -1,0 +1,254 @@
+================================================================================
+Durations, dots and multipliers
+================================================================================
+
+{ c4 d8. e16 f2*2/3 g\breve a\longa b\maxima }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)))
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)))
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)))
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)
+        (fraction
+          numerator: (number)
+          denominator: (number))))
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration))
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration))
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration))))
+
+================================================================================
+Octave marks
+================================================================================
+
+{ c' d,, e }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)
+        (octave)))
+    (note
+      pitch: (pitch
+        (note_name)
+        (octave)))
+    (note
+      pitch: (pitch
+        (note_name)))))
+
+================================================================================
+Forced and cautionary accidentals
+================================================================================
+
+{ cis! des? }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name))
+      (accidental_mark))
+    (note
+      pitch: (pitch
+        (note_name))
+      (accidental_mark))))
+
+================================================================================
+Octave check
+================================================================================
+
+{ c='4 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name))
+      (octave_check
+        (octave))
+      duration: (duration
+        (number)))))
+
+================================================================================
+Rests, skips, multi-measure rests and chord repetition
+================================================================================
+
+{ <c e>4 r4 s2 R1*4 q4 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (chord
+      (note
+        pitch: (pitch
+          (note_name)))
+      (note
+        pitch: (pitch
+          (note_name)))
+      duration: (duration
+        (number)))
+    (rest
+      duration: (duration
+        (number)))
+    (skip
+      duration: (duration
+        (number)))
+    (multi_measure_rest
+      duration: (duration
+        (number)
+        (number)))
+    (chord_repetition
+      duration: (duration
+        (number)))))
+
+================================================================================
+A word that starts like a rest is a note
+================================================================================
+
+\language "espanol"
+{ res4 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (language
+    name: (string))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)))))
+
+================================================================================
+A lone duration repeats the last pitch
+================================================================================
+
+{ c4 8 8 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)))
+    (duration
+      (number))
+    (duration
+      (number))))
+
+================================================================================
+Chords
+================================================================================
+
+{ <c e g>4 <c-1 e-3>2 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (chord
+      (note
+        pitch: (pitch
+          (note_name)))
+      (note
+        pitch: (pitch
+          (note_name)))
+      (note
+        pitch: (pitch
+          (note_name)))
+      duration: (duration
+        (number)))
+    (chord
+      (note
+        pitch: (pitch
+          (note_name)))
+      (fingering
+        (number))
+      (note
+        pitch: (pitch
+          (note_name)))
+      (fingering
+        (number))
+      duration: (duration
+        (number)))))
+
+================================================================================
+Simultaneous music with a voice separator
+================================================================================
+
+<< { c } \\ { e } >>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (simultaneous_music
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name))))
+    (voice_separator)
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name))))))
+
+================================================================================
+Sequential and simultaneous keywords
+================================================================================
+
+\sequential { c }
+\simultaneous { c e }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name))))
+  (simultaneous_music
+    (note
+      pitch: (pitch
+        (note_name)))
+    (note
+      pitch: (pitch
+        (note_name)))))

@@ -57,6 +57,7 @@ export default grammar({
       $.assignment,
       $.scheme,
       $.sequential_music,
+      $.simultaneous_music,
     ),
 
     version: $ => seq('\\version', field('value', $.string)),
@@ -68,22 +69,164 @@ export default grammar({
     header_block: $ => seq('\\header', '{', repeat($.assignment), '}'),
 
     assignment: $ => seq(
-      field('name', $.identifier),
+      field('name', $._identifier),
       '=',
       field('value', $._value),
     ),
 
     _value: $ => choice($.string, $.number, $.scheme),
 
-    // Provisional: the note-mode task replaces `sequential_music`, `note` and
-    // `pitch` under the same names, and the commands task replaces `override`.
-    _music: $ => choice($.sequential_music, $.note, $.override, $.scheme),
+    // A music sequence is flat: events, the post-events that follow them and
+    // the bar checks between them are all siblings.
+    _music: $ => choice(
+      $.sequential_music,
+      $.simultaneous_music,
+      $._event,
+      $._post_event,
+      $.bar_check,
+      $.voice_separator,
+      // Provisional: the commands task replaces `override`.
+      $.override,
+      $.scheme,
+    ),
 
-    sequential_music: $ => seq('{', repeat($._music), '}'),
+    _event: $ => choice(
+      $.note,
+      $.rest,
+      $.skip,
+      $.multi_measure_rest,
+      $.chord_repetition,
+      $.chord,
+      // A duration alone repeats the previous pitch: `c4 8 8`.
+      $.duration,
+    ),
 
-    note: $ => field('pitch', $.pitch),
+    sequential_music: $ => seq(
+      optional('\\sequential'),
+      '{',
+      repeat($._music),
+      '}',
+    ),
 
-    pitch: $ => alias($.identifier, $.note_name),
+    simultaneous_music: $ => choice(
+      seq('<<', repeat($._music), '>>'),
+      seq('\\simultaneous', '{', repeat($._music), '}'),
+    ),
+
+    // Each optional part attaches to the note when it can, so `c 4` is one
+    // note with a duration, as LilyPond reads it.
+    note: $ => prec.right(seq(
+      field('pitch', $.pitch),
+      optional($.accidental_mark),
+      optional($.octave_check),
+      optional(field('duration', $.duration)),
+    )),
+
+    pitch: $ => seq(alias($._word, $.note_name), optional($.octave)),
+
+    octave: _ => /'+|,+/,
+
+    // `!` forces an accidental and `?` makes it cautionary, in that order.
+    accidental_mark: _ => /!+\?*|\?+/,
+
+    octave_check: $ => seq('=', optional($.octave)),
+
+    // The one-letter strings beat the word pattern at equal length, so `r4` is
+    // a rest while `res4` stays a note.
+    rest: $ => prec.right(seq('r', optional(field('duration', $.duration)))),
+
+    skip: $ => prec.right(seq('s', optional(field('duration', $.duration)))),
+
+    multi_measure_rest: $ => prec.right(seq(
+      'R',
+      optional(field('duration', $.duration)),
+    )),
+
+    chord_repetition: $ => prec.right(seq(
+      'q',
+      optional(field('duration', $.duration)),
+    )),
+
+    chord: $ => prec.right(seq(
+      '<',
+      repeat(choice($.note, $._post_event)),
+      '>',
+      optional(field('duration', $.duration)),
+    )),
+
+    duration: $ => prec.right(seq(
+      choice($.number, '\\breve', '\\longa', '\\maxima'),
+      repeat('.'),
+      repeat(seq('*', choice($.number, $.fraction))),
+    )),
+
+    fraction: $ => seq(
+      field('numerator', $.number),
+      '/',
+      field('denominator', $.number),
+    ),
+
+    // Post-events are siblings of the event they follow, never children,
+    // because a command such as `\fermata` can itself be one.
+    _post_event: $ => choice(
+      $.tie,
+      $.slur_start,
+      $.slur_end,
+      $.phrasing_slur_start,
+      $.phrasing_slur_end,
+      $.beam_start,
+      $.beam_end,
+      $.ligature_start,
+      $.ligature_end,
+      $.hairpin,
+      $.hairpin_end,
+      $.articulation,
+      $.fingering,
+      $.string_number,
+      $.tremolo,
+      $.text_script,
+    ),
+
+    tie: _ => '~',
+
+    slur_start: _ => '(',
+
+    slur_end: _ => ')',
+
+    phrasing_slur_start: _ => '\\(',
+
+    phrasing_slur_end: _ => '\\)',
+
+    beam_start: _ => '[',
+
+    beam_end: _ => ']',
+
+    ligature_start: _ => '\\[',
+
+    ligature_end: _ => '\\]',
+
+    hairpin: _ => choice('\\<', '\\>'),
+
+    hairpin_end: _ => '\\!',
+
+    _direction: _ => choice('-', '^', '_'),
+
+    articulation: $ => seq(
+      $._direction,
+      choice('.', '-', '^', '>', '_', '!', '+', $.command),
+    ),
+
+    fingering: $ => seq($._direction, $.number),
+
+    string_number: _ => /\\\d+/,
+
+    tremolo: _ => /:\d*/,
+
+    text_script: $ => seq($._direction, choice($.string, $.markup)),
+
+    bar_check: _ => '|',
+
+    voice_separator: _ => '\\\\',
 
     override: $ => seq(
       '\\override',
@@ -92,7 +235,10 @@ export default grammar({
       field('value', $._value),
     ),
 
-    property_path: $ => seq($.identifier, repeat(seq('.', $.identifier))),
+    property_path: $ => seq(
+      $._identifier,
+      repeat(seq('.', $._identifier)),
+    ),
 
     // Provisional: the markup task replaces these under the same names.
     markup: $ => seq('\\markup', $._markup_argument),
@@ -235,6 +381,10 @@ export default grammar({
       /\\"([^"\\]|\\.)*"/,
     )),
 
-    identifier: _ => token(new RegExp(WORD)),
+    // One word token serves every position, because Tree-sitter cannot lex two
+    // identical patterns differently. Its alias names what the word is there.
+    _word: _ => token(new RegExp(WORD)),
+
+    _identifier: $ => alias($._word, $.identifier),
   },
 });

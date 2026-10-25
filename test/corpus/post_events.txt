@@ -1,0 +1,157 @@
+================================================================================
+Ties, slurs, phrasing slurs, beams and ligatures
+================================================================================
+
+{ c4~ c( d) e\( f\) g[ a] b\[ c\] }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)))
+    (tie)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (slur_start)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (slur_end)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (phrasing_slur_start)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (phrasing_slur_end)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (beam_start)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (beam_end)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (ligature_start)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (ligature_end)))
+
+================================================================================
+Hairpins
+================================================================================
+
+{ c\< d\> e\! }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))
+    (hairpin)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (hairpin)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (hairpin_end)))
+
+================================================================================
+Articulation shorthands
+================================================================================
+
+{ c-. d-^ e-> f-_ g-- a-! b-+ }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))
+    (articulation)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (articulation)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (articulation)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (articulation)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (articulation)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (articulation)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (articulation)))
+
+================================================================================
+Directions, text, fingering, string numbers, tremolo and a bar check
+================================================================================
+
+{ c^"up" d_\markup { down } e-\fermata f-1 g\2 a:16 b4 | }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))
+    (text_script
+      (string))
+    (note
+      pitch: (pitch
+        (note_name)))
+    (text_script
+      (markup
+        (markup_block
+          (markup_word))))
+    (note
+      pitch: (pitch
+        (note_name)))
+    (articulation
+      (command))
+    (note
+      pitch: (pitch
+        (note_name)))
+    (fingering
+      (number))
+    (note
+      pitch: (pitch
+        (note_name)))
+    (string_number)
+    (note
+      pitch: (pitch
+        (note_name)))
+    (tremolo)
+    (note
+      pitch: (pitch
+        (note_name))
+      duration: (duration
+        (number)))
+    (bar_check)))
