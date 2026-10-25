@@ -52,9 +52,10 @@ export default grammar({
     $._error_sentinel,
   ],
 
-  // A byte-order mark after the start of a file draws a warning from LilyPond
-  // and is otherwise skipped.
-  extras: $ => [/[\s\uFEFF]/, $.line_comment, $.block_comment],
+  // LilyPond's whitespace is ASCII: a no-break space is a letter to it, and a
+  // vertical tab an error. A byte-order mark after the start of a file draws
+  // a warning and is otherwise skipped.
+  extras: $ => [/[ \t\n\r\f\uFEFF]/, $.line_comment, $.block_comment],
 
   // Each word below is a keyword everywhere, so where its construct cannot
   // stand, as `\override` cannot at the top level, it is an error and not a

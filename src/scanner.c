@@ -17,7 +17,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <wctype.h>
 
 enum TokenType {
     BLOCK_COMMENT,
@@ -54,10 +53,11 @@ void tree_sitter_lilypond_external_scanner_deserialize(void *payload, const char
     scanner->depth = length > 0 ? (uint8_t)buffer[0] : 0;
 }
 
-// Whitespace, and the byte-order mark, which LilyPond skips after the start of
-// a file.
+// Whitespace as LilyPond reads it: space, tab, line feed, carriage return and
+// form feed, and the byte-order mark, which it skips after the start of a
+// file. Not `iswspace`, whose answer for other spaces depends on the locale.
 static bool is_space(int32_t c) {
-    return iswspace(c) || c == 0xFEFF;
+    return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == 0xFEFF;
 }
 
 static void skip_whitespace(TSLexer *lexer) {

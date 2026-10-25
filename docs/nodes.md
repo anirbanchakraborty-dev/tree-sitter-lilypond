@@ -42,7 +42,7 @@ A digit still starts a `duration`, a backslash a `command` and `#` or `$` Scheme
 
 ## Comments
 
-A `%` followed by anything but `{` starts a `line_comment`, which ends before the next carriage return or line feed, so a file with Windows line endings parses the same as one with Unix endings. `%{` starts a `block_comment`, which ends at the first `%}`. Block comments do not nest, so `%{ a %{ b %}` is one comment, and `%%%}` closes one. An unterminated `%{` is not a comment: it shows as an error where it opens, which is where LilyPond reports it. A byte-order mark after the start of a file is whitespace, as LilyPond skips it with a warning.
+A `%` followed by anything but `{` starts a `line_comment`, which ends before the next carriage return or line feed, so a file with Windows line endings parses the same as one with Unix endings. `%{` starts a `block_comment`, which ends at the first `%}`. Block comments do not nest, so `%{ a %{ b %}` is one comment, and `%%%}` closes one. An unterminated `%{` is not a comment: it shows as an error where it opens, which is where LilyPond reports it. A byte-order mark after the start of a file is whitespace, as LilyPond skips it with a warning. Otherwise whitespace is what LilyPond reads as whitespace: space, tab, line feed, carriage return and form feed. A no-break space, an ideographic space and every other space beyond ASCII are letters to LilyPond, so inside a lyric word each is part of the word, and a vertical tab is an error. The scanner decides this itself rather than asking the C library, whose answer for those spaces changes with the locale an editor runs in.
 
 ## Reader rules inside `#{ #}`
 
