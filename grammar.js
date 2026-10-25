@@ -956,10 +956,11 @@ export default grammar({
     ),
 
     // `#{ ... #}` as a Scheme datum. The scanner tracks how deep these nest.
+    // The delimiters are aliased to their text so queries can name them.
     embedded_lilypond: $ => seq(
-      $._embedded_start,
+      alias($._embedded_start, '#{'),
       repeat($._music),
-      $._embedded_end,
+      alias($._embedded_end, '#}'),
     ),
 
     // `\word`, or `\"any text"`, which names a variable whose name is not a

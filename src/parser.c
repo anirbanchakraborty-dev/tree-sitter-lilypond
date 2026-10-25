@@ -422,8 +422,8 @@ static const char * const ts_symbol_names[] = {
   [sym_scheme_keyword] = "scheme_keyword",
   [sym__scheme_escape] = "escape_sequence",
   [sym__word] = "note_name",
-  [sym__embedded_start] = "_embedded_start",
-  [sym__embedded_end] = "_embedded_end",
+  [sym__embedded_start] = "#{",
+  [sym__embedded_end] = "#}",
   [sym_scheme_block_comment] = "scheme_block_comment",
   [sym__lyric_word] = "lyric_word",
   [sym__markup_word] = "markup_word",
@@ -1332,12 +1332,12 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
     .named = true,
   },
   [sym__embedded_start] = {
-    .visible = false,
-    .named = true,
+    .visible = true,
+    .named = false,
   },
   [sym__embedded_end] = {
-    .visible = false,
-    .named = true,
+    .visible = true,
+    .named = false,
   },
   [sym_scheme_block_comment] = {
     .visible = true,

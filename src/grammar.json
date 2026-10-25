@@ -4583,8 +4583,13 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_embedded_start"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_embedded_start"
+          },
+          "named": false,
+          "value": "#{"
         },
         {
           "type": "REPEAT",
@@ -4594,8 +4599,13 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "_embedded_end"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_embedded_end"
+          },
+          "named": false,
+          "value": "#}"
         }
       ]
     },

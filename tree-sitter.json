@@ -11,7 +11,8 @@
         "ily"
       ],
       "injection-regex": "^(lilypond|ly)$",
-      "highlights": "queries/highlights.scm"
+      "highlights": "queries/highlights.scm",
+      "locals": "queries/locals.scm"
     }
   ],
   "metadata": {
