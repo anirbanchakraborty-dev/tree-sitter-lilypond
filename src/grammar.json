@@ -998,6 +998,19 @@
       "members": [
         {
           "type": "SYMBOL",
+          "name": "_event"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "bar_check"
+        }
+      ]
+    },
+    "_event": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
           "name": "note"
         },
         {
@@ -1027,10 +1040,6 @@
         {
           "type": "SYMBOL",
           "name": "_post_event"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "bar_check"
         },
         {
           "type": "SYMBOL",
@@ -1104,13 +1113,124 @@
         {
           "type": "REPEAT",
           "content": {
-            "type": "SYMBOL",
-            "name": "_music"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_bar"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "bar_check"
+              }
+            ]
           }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_run"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "STRING",
           "value": "}"
+        }
+      ]
+    },
+    "_bar": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_run"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "bar_check"
+        }
+      ]
+    },
+    "_run": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_bar_item"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_bar_item"
+          }
+        }
+      ]
+    },
+    "_bar_item": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_event"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "duration"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "scheme"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sequential_music"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "simultaneous_music"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "markup"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyric_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyrics_to"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "add_lyrics"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "chord_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "figure_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "drum_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "note_mode"
         }
       ]
     },

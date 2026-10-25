@@ -379,7 +379,10 @@ export default grammar({
       $.scheme,
     ),
 
-    _value_start: $ => choice(
+    _value_start: $ => choice($._event, $.bar_check),
+
+    // What a value can start with, but a bar check.
+    _event: $ => choice(
       $.note,
       $.rest,
       $.skip,
@@ -389,7 +392,6 @@ export default grammar({
       // `\time 3/4`.
       $.fraction,
       $._post_event,
-      $.bar_check,
       $.voice_separator,
       $.command,
       $.dotted_name,
@@ -404,7 +406,40 @@ export default grammar({
       $.change,
     ),
 
-    sequential_music: $ => sequentialOf($._music),
+    // Each bar inside the braces is a hidden node, its items and then the bar
+    // check that ends it, so the tree still shows one flat sequence. After an
+    // edit the parser reuses every other bar whole, where it would otherwise
+    // step through a long piece note by note. Tree-sitter never reuses a node
+    // whose first or last child is a repetition, so a bar starts with one item
+    // before the rest repeat.
+    sequential_music: $ => seq(
+      optional('\\sequential'), '{',
+      repeat(choice($._bar, $.bar_check)),
+      optional($._run),
+      '}',
+    ),
+
+    _bar: $ => seq($._run, $.bar_check),
+
+    _run: $ => seq($._bar_item, repeat($._bar_item)),
+
+    // `_music` but a bar check.
+    _bar_item: $ => choice(
+      $._event,
+      $.duration,
+      $.string,
+      $.scheme,
+      $.sequential_music,
+      $.simultaneous_music,
+      $.markup,
+      $.lyric_mode,
+      $.lyrics_to,
+      $.add_lyrics,
+      $.chord_mode,
+      $.figure_mode,
+      $.drum_mode,
+      $.note_mode,
+    ),
 
     simultaneous_music: $ => simultaneousOf($._music),
 
