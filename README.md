@@ -83,11 +83,11 @@ The grammar was measured on 2026-10-24 against the existing LilyPond grammar for
 
 | Criterion | This grammar | nwhetsell | Result |
 | --- | ---: | ---: | --- |
-| Accepted files with an error, fewer is better | 432 | 2 | fails |
-| Throughput, nwhetsell timed with its embedded Scheme grammar | 27,105 bytes/ms | 15,593 bytes/ms | passes |
+| Accepted files with an error, fewer is better | 118 | 2 | fails |
+| Throughput, nwhetsell timed with its embedded Scheme grammar | 28,112 bytes/ms | 15,593 bytes/ms | passes |
 | Broken files caught within one line of LilyPond's error | 30 of 36 | 16 of 36 | passes |
 
-The two grammars sit at opposite ends of one trade. nwhetsell's accepts nearly everything, so it shows almost no false errors and misses most broken files. This one rejects what it does not recognise, so it catches more real mistakes and also flags valid LilyPond it has not yet learned to read, such as `\omit Staff.TimeSignature`, `f^(` and `\repeat "volta" 2`. The measured commit was `55874acfcc4f9bc72e5bbfca3cf3ba59e6c9b540`. The full report, with every broken file this grammar misses and why, and the accepted-file errors grouped by construct, is [docs/bench/verdict.md](https://github.com/anirbanchakraborty-dev/swara/blob/main/docs/bench/verdict.md) in the Swara repository.
+The two grammars sit at opposite ends of one trade. nwhetsell's accepts nearly everything, so it shows almost no false errors and misses most broken files. This one rejects what it does not recognise, so it catches more real mistakes and also flags valid LilyPond it has not yet learned to read, such as `ragged-right = ##T`, `c'4\3\^` and `\new Staff \with \ctxmod`. None of the 114 Mutopia scores in the corpus shows an error. The measured commit was `ca12c11f5aa9205c116398253280037f0194ec3a`. The full report, with every broken file this grammar misses and why, and the accepted-file errors grouped by construct, is [docs/bench/verdict.md](https://github.com/anirbanchakraborty-dev/swara/blob/main/docs/bench/verdict.md) in the Swara repository.
 
 ## Licence
 
