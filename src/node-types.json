@@ -367,6 +367,10 @@
             "named": true
           },
           {
+            "type": "markup_list",
+            "named": true
+          },
+          {
             "type": "midi_block",
             "named": true
           },
@@ -587,6 +591,10 @@
           "named": true
         },
         {
+          "type": "markup_list",
+          "named": true
+        },
+        {
           "type": "multi_measure_rest",
           "named": true
         },
@@ -787,6 +795,10 @@
         },
         {
           "type": "markup",
+          "named": true
+        },
+        {
+          "type": "markup_list",
           "named": true
         },
         {
@@ -1547,15 +1559,27 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "command",
+          "named": true
+        },
         {
           "type": "markup_block",
           "named": true
         },
         {
+          "type": "markup_word",
+          "named": true
+        },
+        {
           "type": "scheme",
+          "named": true
+        },
+        {
+          "type": "score_block",
           "named": true
         },
         {
@@ -1574,6 +1598,10 @@
       "required": false,
       "types": [
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "markup_block",
           "named": true
         },
@@ -1586,7 +1614,34 @@
           "named": true
         },
         {
+          "type": "score_block",
+          "named": true
+        },
+        {
           "type": "string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "markup_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "markup_block",
+          "named": true
+        },
+        {
+          "type": "scheme",
           "named": true
         }
       ]
@@ -1770,6 +1825,10 @@
           },
           {
             "type": "markup",
+            "named": true
+          },
+          {
+            "type": "markup_list",
             "named": true
           },
           {
@@ -2903,6 +2962,10 @@
             "named": true
           },
           {
+            "type": "markup_list",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -3266,6 +3329,10 @@
         },
         {
           "type": "markup",
+          "named": true
+        },
+        {
+          "type": "markup_list",
           "named": true
         },
         {
@@ -3718,6 +3785,10 @@
   },
   {
     "type": "\\markup",
+    "named": false
+  },
+  {
+    "type": "\\markuplist",
     "named": false
   },
   {

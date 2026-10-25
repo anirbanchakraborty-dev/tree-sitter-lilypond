@@ -42,6 +42,7 @@ fn words_do_not_depend_on_the_locale() {
     for space in ['\u{a0}', '\u{3000}'] {
         for (source, kind) in [
             (format!("\\lyricmode {{ a{space}b }}"), "lyric_word"),
+            (format!("\\markup {{ a{space}b }}"), "markup_word"),
         ] {
             let tree = parser.parse(&source, None).unwrap();
             let root = tree.root_node();

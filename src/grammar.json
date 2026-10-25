@@ -695,6 +695,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "markup_list"
+        },
+        {
+          "type": "SYMBOL",
           "name": "lyric_mode"
         },
         {
@@ -868,6 +872,10 @@
         {
           "type": "SYMBOL",
           "name": "markup"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "markup_list"
         },
         {
           "type": "SYMBOL",
@@ -1970,6 +1978,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "markup_list"
+        },
+        {
+          "type": "SYMBOL",
           "name": "command"
         }
       ]
@@ -2535,32 +2547,187 @@
       "value": "__"
     },
     "markup": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "\\markup"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_markup_argument"
-        }
-      ]
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "\\markup"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "REPEAT1",
+                    "content": {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "CHOICE",
+                          "members": [
+                            {
+                              "type": "SYMBOL",
+                              "name": "command"
+                            },
+                            {
+                              "type": "ALIAS",
+                              "content": {
+                                "type": "STRING",
+                                "value": "\\override"
+                              },
+                              "named": true,
+                              "value": "command"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "scheme"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "_markup_argument"
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_markup_argument"
+              }
+            ]
+          }
+        ]
+      }
     },
     "_markup_argument": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SYMBOL",
+          "name": "markup_block"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_markup_word_ahead"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_markup_word"
+              },
+              "named": true,
+              "value": "markup_word"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
           "name": "string"
         },
         {
           "type": "SYMBOL",
-          "name": "markup_block"
+          "name": "score_block"
+        }
+      ]
+    },
+    "markup_list": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "\\markuplist"
         },
         {
-          "type": "SYMBOL",
-          "name": "scheme"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "REPEAT1",
+                  "content": {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "PREC_DYNAMIC",
+                        "value": 1,
+                        "content": {
+                          "type": "CHOICE",
+                          "members": [
+                            {
+                              "type": "SYMBOL",
+                              "name": "command"
+                            },
+                            {
+                              "type": "ALIAS",
+                              "content": {
+                                "type": "STRING",
+                                "value": "\\override"
+                              },
+                              "named": true,
+                              "value": "command"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "scheme"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "PREC_DYNAMIC",
+                      "value": 1,
+                      "content": {
+                        "type": "SYMBOL",
+                        "name": "markup_block"
+                      }
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "markup_block"
+            }
+          ]
         }
       ]
     },
@@ -2577,20 +2744,30 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "SYMBOL",
-                "name": "markup_word"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "string"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "markup_block"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "command"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "\\override"
+                    },
+                    "named": true,
+                    "value": "command"
+                  }
+                ]
               },
               {
                 "type": "SYMBOL",
                 "name": "scheme"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_markup_argument"
               }
             ]
           }
@@ -2600,10 +2777,6 @@
           "value": "}"
         }
       ]
-    },
-    "markup_word": {
-      "type": "PATTERN",
-      "value": "[^\\s{}\"\\\\#$%]+"
     },
     "line_comment": {
       "type": "TOKEN",
@@ -3213,7 +3386,11 @@
       "name": "block_comment"
     }
   ],
-  "conflicts": [],
+  "conflicts": [
+    [
+      "markup_list"
+    ]
+  ],
   "precedences": [],
   "externals": [
     {
@@ -3243,6 +3420,10 @@
     {
       "type": "SYMBOL",
       "name": "_assignment_start"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_markup_word_ahead"
     },
     {
       "type": "SYMBOL",
@@ -3292,6 +3473,14 @@
       {
         "type": "STRING",
         "value": "\\lyricsto"
+      },
+      {
+        "type": "STRING",
+        "value": "\\markup"
+      },
+      {
+        "type": "STRING",
+        "value": "\\markuplist"
       }
     ]
   }

@@ -9,8 +9,9 @@
 //
 // It also emits `_assignment_start`, a zero-width token, where a name and then
 // `=` lie ahead. The parser has one token of lookahead, which cannot see past
-// the name to the `=`. And it reads lyric words, whose end depends on whether
-// the word sits inside `#{ #}`.
+// the name to the `=`, and `_markup_word_ahead`, also zero-width, where that
+// look found a markup word instead. And it reads lyric and markup words, whose
+// end depends on whether the word sits inside `#{ #}`.
 
 #include "tree_sitter/parser.h"
 
@@ -26,6 +27,7 @@ enum TokenType {
     LYRIC_WORD,
     MARKUP_WORD,
     ASSIGNMENT_START,
+    MARKUP_WORD_AHEAD,
     ERROR_SENTINEL,
 };
 
@@ -180,13 +182,30 @@ static bool pass_assignment_name(TSLexer *lexer) {
     return lexer->lookahead != '\'' && lexer->lookahead != ',';
 }
 
-// A character that ends a lyric word. A digit is one, so `a4` is a word and its
-// duration. Inside `#{ #}` the Scheme reader sees a `%` before LilyPond does,
-// and to the reader it starts a comment.
-static bool ends_lyric_word(TSLexer *lexer, bool embedded) {
+// A character that ends a markup word. Inside `#{ #}` the Scheme reader sees a
+// `%` before LilyPond does, and to the reader it starts a comment.
+static bool ends_markup_word(TSLexer *lexer, bool embedded) {
     int32_t c = lexer->lookahead;
-    return lexer->eof(lexer) || is_space(c) || is_digit(c) || c == '$' || c == '#' || c == '{' ||
-           c == '}' || c == '"' || c == '\\' || (embedded && c == '%');
+    return lexer->eof(lexer) || is_space(c) || c == '$' || c == '#' || c == '{' || c == '}' ||
+           c == '"' || c == '\\' || (embedded && c == '%');
+}
+
+// A lyric word ends at a digit as well, so `a4` is a word and its duration.
+static bool ends_lyric_word(TSLexer *lexer, bool embedded) {
+    return ends_markup_word(lexer, embedded) || is_digit(lexer->lookahead);
+}
+
+// A markup word: anything up to an ending character. A `%` cannot come first,
+// since there it starts a comment.
+static bool scan_markup_word(TSLexer *lexer, bool embedded) {
+    if (ends_markup_word(lexer, embedded) || lexer->lookahead == '%') {
+        return false;
+    }
+    while (!ends_markup_word(lexer, embedded)) {
+        lexer->advance(lexer, false);
+    }
+    lexer->result_symbol = MARKUP_WORD;
+    return true;
 }
 
 // A lyric word: anything up to an ending character, where the first character
@@ -232,7 +251,9 @@ bool tree_sitter_lilypond_external_scanner_scan(void *payload, TSLexer *lexer,
     bool want_comment = valid_symbols[SCHEME_BLOCK_COMMENT];
     bool want_assignment = valid_symbols[ASSIGNMENT_START];
     bool want_lyric = valid_symbols[LYRIC_WORD];
-    if (!want_start && !want_end && !want_comment && !want_assignment && !want_lyric) {
+    bool want_markup = valid_symbols[MARKUP_WORD];
+    if (!want_start && !want_end && !want_comment && !want_assignment && !want_lyric &&
+        !want_markup) {
         return false;
     }
 
@@ -242,13 +263,30 @@ bool tree_sitter_lilypond_external_scanner_scan(void *payload, TSLexer *lexer,
     // Marking the end before looking ahead keeps the token zero-width, so the
     // name is still there for the parser to read.
     if (want_assignment && (is_letter(lexer->lookahead) || lexer->lookahead == '"')) {
+        bool word = lexer->lookahead != '"';
         lexer->mark_end(lexer);
-        lexer->result_symbol = ASSIGNMENT_START;
-        return pass_assignment_name(lexer);
+        if (pass_assignment_name(lexer)) {
+            lexer->result_symbol = ASSIGNMENT_START;
+            return true;
+        }
+        // Not a name and `=`, so where markup may take an argument the word is
+        // the markup's. Its end now lies behind the lookahead, so a zero-width
+        // token says a word comes next, and the next call reads it.
+        if (word && valid_symbols[MARKUP_WORD_AHEAD]) {
+            lexer->result_symbol = MARKUP_WORD_AHEAD;
+            return true;
+        }
+        return false;
     }
 
+    // Where markup may take an argument and lyrics may follow it, as after
+    // `\markup \bold` in lyric mode, the word is the markup's.
     if (lexer->lookahead != '#') {
-        return want_lyric && scan_lyric_word(lexer, scanner->depth > 0, spaced);
+        bool embedded = scanner->depth > 0;
+        if (want_markup) {
+            return scan_markup_word(lexer, embedded);
+        }
+        return want_lyric && scan_lyric_word(lexer, embedded, spaced);
     }
     lexer->advance(lexer, false);
 

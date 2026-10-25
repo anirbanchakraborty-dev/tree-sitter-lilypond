@@ -29,6 +29,17 @@ const schemeSymbol = (firstExcluded) => new RegExp(
   `|\\.[^${SCHEME_DELIMITER}]+`,
 );
 
+// A markup command. Inside markup `\override` takes a Scheme pair and is a
+// command like any other, although it is a keyword everywhere else.
+const markupCommand = ($) => choice($.command, alias('\\override', $.command));
+
+// Markup commands and their Scheme arguments, then an argument, which may be
+// left out after a command.
+const markupContent = ($, argument) => choice(
+  seq(repeat1(choice(markupCommand($), $.scheme)), optional(argument)),
+  argument,
+);
+
 // A metronome mark: a unit, `=` and a rate, or a range of rates.
 const metronomeMark = ($) => seq(
   field('unit', $.duration),
@@ -49,6 +60,7 @@ export default grammar({
     $._lyric_word,
     $._markup_word,
     $._assignment_start,
+    $._markup_word_ahead,
     $._error_sentinel,
   ],
 
@@ -63,10 +75,15 @@ export default grammar({
   // as `\overrideProperty` still wins by length.
   word: $ => $.command,
 
+  // Where a markup list ends is decided by which reading parses. See
+  // `markup_list`.
+  conflicts: $ => [[$.markup_list]],
+
   reserved: {
     global: _ => [
       '\\override', '\\set', '\\revert', '\\unset', '\\tempo', '\\change',
       '\\lyricmode', '\\lyrics', '\\addlyrics', '\\lyricsto',
+      '\\markup', '\\markuplist',
     ],
   },
 
@@ -214,6 +231,7 @@ export default grammar({
       $.sequential_music,
       $.simultaneous_music,
       $.markup,
+      $.markup_list,
       $.lyric_mode,
       $.lyrics_to,
       $.header_block,
@@ -260,6 +278,7 @@ export default grammar({
       $.sequential_music,
       $.simultaneous_music,
       $.markup,
+      $.markup_list,
       $.lyric_mode,
       $.lyrics_to,
     ),
@@ -487,6 +506,7 @@ export default grammar({
       $.number,
       $.scheme,
       $.markup,
+      $.markup_list,
       $.command,
     ),
 
@@ -583,18 +603,44 @@ export default grammar({
 
     lyric_extender: _ => '__',
 
-    // Provisional: the markup task replaces these under the same names.
-    markup: $ => seq('\\markup', $._markup_argument),
+    // Markup is `\markup`, then any markup commands and their Scheme
+    // arguments, then at most one argument: braces, a word, a string or a
+    // score. How many arguments a command takes is known only when LilyPond
+    // runs, so the commands are flat and the markup ends after its first
+    // argument. A command with two markup arguments therefore leaves its
+    // second outside, unless the markup is braced. The argument may be left
+    // out after a command, which can be a variable holding a whole markup.
+    markup: $ => prec.right(seq('\\markup', markupContent($, $._markup_argument))),
 
-    _markup_argument: $ => choice($.string, $.markup_block, $.scheme),
+    // Where an assignment may follow the markup, the scanner looks past a word
+    // for `=` before it knows the word is the markup's, and by then the word's
+    // end is behind it. So it first emits `_markup_word_ahead`, a zero-width
+    // token, and reads the word on the next call.
+    _markup_argument: $ => choice(
+      $.markup_block,
+      seq(optional($._markup_word_ahead), alias($._markup_word, $.markup_word)),
+      $.string,
+      $.score_block,
+    ),
+
+    // A markup list takes braces or a Scheme datum, never a word or a string.
+    // Its commands are flat as markup's are, but what follows a list that ends
+    // in a command, as `\\markuplist \\table-of-contents` does, is as often new
+    // music as more of the list. So both readings run, and one that meets an
+    // error is dropped. Where both parse, the list goes on.
+    markup_list: $ => seq('\\markuplist', choice(
+      seq(
+        repeat1(choice(prec.dynamic(1, markupCommand($)), $.scheme)),
+        optional(prec.dynamic(1, $.markup_block)),
+      ),
+      $.markup_block,
+    )),
 
     markup_block: $ => seq(
       '{',
-      repeat(choice($.markup_word, $.string, $.markup_block, $.scheme)),
+      repeat(choice(markupCommand($), $.scheme, $._markup_argument)),
       '}',
     ),
-
-    markup_word: _ => /[^\s{}"\\#$%]+/,
 
     // `%` followed by anything but `{` runs to the end of the line, and stops
     // before a carriage return so that CRLF files do not end in it.

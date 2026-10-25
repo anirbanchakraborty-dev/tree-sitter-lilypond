@@ -1,0 +1,506 @@
+================================================================================
+Commands, strings, words and nested blocks
+================================================================================
+
+\markup { \bold "x" word \line { a b } }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup
+    (markup_block
+      (command)
+      (string)
+      (markup_word)
+      (command)
+      (markup_block
+        (markup_word)
+        (markup_word)))))
+
+================================================================================
+Commands before a word
+================================================================================
+
+\markup \bold \italic foo
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup
+    (command)
+    (command)
+    (markup_word)))
+
+================================================================================
+Commands and Scheme before a string
+================================================================================
+
+\markup \fontsize #3 \bold "x"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup
+    (command)
+    (scheme
+      (scheme_number))
+    (command)
+    (string)))
+
+================================================================================
+A string or a Scheme datum alone
+================================================================================
+
+\markup "x"
+\markup #"y"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup
+    (string))
+  (markup
+    (scheme
+      (scheme_string))))
+
+================================================================================
+A markup list
+================================================================================
+
+\markuplist { \column-lines { a } }
+\markuplist \column-lines { b }
+\markuplist #(list "c")
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup_list
+    (markup_block
+      (command)
+      (markup_block
+        (markup_word))))
+  (markup_list
+    (command)
+    (markup_block
+      (markup_word)))
+  (markup_list
+    (scheme
+      (scheme_list
+        (scheme_symbol)
+        (scheme_string)))))
+
+================================================================================
+A markup list in an assignment
+================================================================================
+
+x = \markuplist { a }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (markup_list
+      (markup_block
+        (markup_word)))))
+
+================================================================================
+A percent sign inside a word is part of it
+================================================================================
+
+\markup { 50% off a%b }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup
+    (markup_block
+      (markup_word)
+      (markup_word)
+      (markup_word))))
+
+================================================================================
+A percent sign after a space starts a comment
+================================================================================
+
+\markup { a %b
+}
+\markup { c %{ d %} e }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup
+    (markup_block
+      (markup_word)
+      (line_comment)))
+  (markup
+    (markup_block
+      (markup_word)
+      (block_comment)
+      (markup_word))))
+
+================================================================================
+Music punctuation is a word
+================================================================================
+
+\markup { 4 c4 c, | = -- __ << . * a.b }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup
+    (markup_block
+      (markup_word)
+      (markup_word)
+      (markup_word)
+      (markup_word)
+      (markup_word)
+      (markup_word)
+      (markup_word)
+      (markup_word)
+      (markup_word)
+      (markup_word)
+      (markup_word))))
+
+================================================================================
+A string, Scheme or a brace ends a word
+================================================================================
+
+\markup { a"b" c#"d" e{f} g}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup
+    (markup_block
+      (markup_word)
+      (string)
+      (markup_word)
+      (scheme
+        (scheme_string))
+      (markup_word)
+      (markup_block
+        (markup_word))
+      (markup_word))))
+
+================================================================================
+A brace inside a word opens a block
+:error
+================================================================================
+
+\markup { a{b }
+
+--------------------------------------------------------------------------------
+
+================================================================================
+A score inside markup returns to note mode
+================================================================================
+
+\markup { \score { { c } \layout { } } }
+\markup \score { c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup
+    (markup_block
+      (score_block
+        (sequential_music
+          (note
+            pitch: (pitch
+              (note_name))))
+        (layout_block))))
+  (markup
+    (score_block
+      (note
+        pitch: (pitch
+          (note_name))))))
+
+================================================================================
+Markup as a post-event
+================================================================================
+
+{ c^\markup { up } }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))
+    (text_script
+      (markup
+        (markup_block
+          (markup_word))))))
+
+================================================================================
+Markup in a header
+================================================================================
+
+\header { title = \markup { \bold T } }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (header_block
+    (assignment
+      name: (identifier)
+      value: (markup
+        (markup_block
+          (command)
+          (markup_word))))))
+
+================================================================================
+Override is a markup command inside markup
+================================================================================
+
+\markup { \override #'(font-size . 3) x }
+\markup \override #'(font-size . 3) y
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup
+    (markup_block
+      (command)
+      (scheme
+        (scheme_quote
+          (scheme_list
+            (scheme_symbol)
+            (scheme_number))))
+      (markup_word)))
+  (markup
+    (command)
+    (scheme
+      (scheme_quote
+        (scheme_list
+          (scheme_symbol)
+          (scheme_number))))
+    (markup_word)))
+
+================================================================================
+Override is a keyword again after markup
+================================================================================
+
+{ c^\markup x \override NoteHead.color = #red c }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))
+    (text_script
+      (markup
+        (markup_word)))
+    (override
+      path: (property_path
+        (identifier)
+        (identifier))
+      value: (scheme
+        (scheme_symbol)))
+    (note
+      pitch: (pitch
+        (note_name)))))
+
+================================================================================
+A markup variable needs no argument
+================================================================================
+
+x = \markup y
+\header { title = \markup \x composer = "z" }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (markup
+      (markup_word)))
+  (header_block
+    (assignment
+      name: (identifier)
+      value: (markup
+        (command)))
+    (assignment
+      name: (identifier)
+      value: (string))))
+
+================================================================================
+Markup ends after its argument
+================================================================================
+
+\markup \bold "T"
+\header { title = "x" }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup
+    (command)
+    (string))
+  (header_block
+    (assignment
+      name: (identifier)
+      value: (string))))
+
+================================================================================
+A command with two markup arguments is flat
+================================================================================
+
+\markup \combine \null \null
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup
+    (command)
+    (command)
+    (command)))
+
+================================================================================
+A word after the argument is music again
+:error
+================================================================================
+
+\markup \line { a } b
+
+--------------------------------------------------------------------------------
+
+================================================================================
+A markup list takes braces or Scheme
+:error
+================================================================================
+
+\markuplist a
+
+--------------------------------------------------------------------------------
+
+================================================================================
+Markup cannot hold markup
+:error
+================================================================================
+
+\markup { \markup { a } }
+
+--------------------------------------------------------------------------------
+
+================================================================================
+A markup list is not music
+:error
+================================================================================
+
+{ c \markuplist { a } }
+
+--------------------------------------------------------------------------------
+
+================================================================================
+A no-break space is part of a markup word
+================================================================================
+
+\markup { a b   }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup
+    (markup_block
+      (markup_word)
+      (markup_word))))
+
+================================================================================
+Markup inside embedded LilyPond
+================================================================================
+
+x = ##{ \markup { a } #}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (scheme
+      (embedded_lilypond
+        (markup
+          (markup_block
+            (markup_word)))))))
+
+================================================================================
+A percent sign ends a markup word inside embedded LilyPond
+:error
+================================================================================
+
+x = ##{ \markup { a%b } #}
+
+--------------------------------------------------------------------------------
+
+================================================================================
+A markup list as a property value
+================================================================================
+
+{ \set fretLabels = \markuplist { "a" "b" } }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (set
+      path: (property_path
+        (identifier))
+      value: (markup_list
+        (markup_block
+          (string)
+          (string))))))
+
+================================================================================
+Commands before braces in a markup list
+================================================================================
+
+\markuplist \override-lines #'(baseline-skip . 3) \column-lines { a }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup_list
+    (command)
+    (scheme
+      (scheme_quote
+        (scheme_list
+          (scheme_symbol)
+          (scheme_number))))
+    (command)
+    (markup_block
+      (markup_word))))
+
+================================================================================
+A markup list ends where music follows it
+================================================================================
+
+\book {
+  \markuplist \table-of-contents
+  \relative { c'2 \tocItem \markup "x" c }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (book_block
+    (markup_list
+      (command))
+    (command)
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)
+          (octave))
+        duration: (duration
+          (number)))
+      (command)
+      (markup
+        (string))
+      (note
+        pitch: (pitch
+          (note_name))))))
