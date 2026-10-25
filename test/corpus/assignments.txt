@@ -25,11 +25,9 @@ verse.1 = \lyricmode { a }
     name: (dotted_name
       (identifier)
       (number))
-    value: (command)
-    value: (sequential_music
-      (note
-        pitch: (pitch
-          (note_name))))))
+    value: (lyric_mode
+      (sequential_music
+        (lyric_word)))))
 
 ================================================================================
 A dotted reference, with or without spaces

@@ -1,5 +1,28 @@
 [
   {
+    "type": "add_lyrics",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "sequential_music",
+          "named": true
+        },
+        {
+          "type": "simultaneous_music",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "alternative",
     "named": true,
     "fields": {},
@@ -7,6 +30,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "add_lyrics",
+          "named": true
+        },
         {
           "type": "alternative",
           "named": true
@@ -73,6 +100,26 @@
         },
         {
           "type": "ligature_start",
+          "named": true
+        },
+        {
+          "type": "lyric_extender",
+          "named": true
+        },
+        {
+          "type": "lyric_hyphen",
+          "named": true
+        },
+        {
+          "type": "lyric_mode",
+          "named": true
+        },
+        {
+          "type": "lyric_word",
+          "named": true
+        },
+        {
+          "type": "lyrics_to",
           "named": true
         },
         {
@@ -220,6 +267,10 @@
         "required": true,
         "types": [
           {
+            "type": "add_lyrics",
+            "named": true
+          },
+          {
             "type": "alternative",
             "named": true
           },
@@ -301,6 +352,14 @@
           },
           {
             "type": "ligature_start",
+            "named": true
+          },
+          {
+            "type": "lyric_mode",
+            "named": true
+          },
+          {
+            "type": "lyrics_to",
             "named": true
           },
           {
@@ -436,6 +495,10 @@
       "required": false,
       "types": [
         {
+          "type": "add_lyrics",
+          "named": true
+        },
+        {
           "type": "alternative",
           "named": true
         },
@@ -509,6 +572,14 @@
         },
         {
           "type": "ligature_start",
+          "named": true
+        },
+        {
+          "type": "lyric_mode",
+          "named": true
+        },
+        {
+          "type": "lyrics_to",
           "named": true
         },
         {
@@ -631,6 +702,10 @@
       "required": false,
       "types": [
         {
+          "type": "add_lyrics",
+          "named": true
+        },
+        {
           "type": "alternative",
           "named": true
         },
@@ -700,6 +775,14 @@
         },
         {
           "type": "ligature_start",
+          "named": true
+        },
+        {
+          "type": "lyric_mode",
+          "named": true
+        },
+        {
+          "type": "lyrics_to",
           "named": true
         },
         {
@@ -1066,6 +1149,10 @@
       "required": false,
       "types": [
         {
+          "type": "add_lyrics",
+          "named": true
+        },
+        {
           "type": "alternative",
           "named": true
         },
@@ -1131,6 +1218,14 @@
         },
         {
           "type": "ligature_start",
+          "named": true
+        },
+        {
+          "type": "lyric_mode",
+          "named": true
+        },
+        {
+          "type": "lyrics_to",
           "named": true
         },
         {
@@ -1371,6 +1466,77 @@
         },
         {
           "type": "unset",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "lyric_mode",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "sequential_music",
+          "named": true
+        },
+        {
+          "type": "simultaneous_music",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "lyrics_to",
+    "named": true,
+    "fields": {
+      "type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "voice": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "command",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "command",
+          "named": true
+        },
+        {
+          "type": "sequential_music",
+          "named": true
+        },
+        {
+          "type": "simultaneous_music",
           "named": true
         }
       ]
@@ -2313,6 +2479,10 @@
       "required": false,
       "types": [
         {
+          "type": "add_lyrics",
+          "named": true
+        },
+        {
           "type": "alternative",
           "named": true
         },
@@ -2386,6 +2556,14 @@
         },
         {
           "type": "ligature_start",
+          "named": true
+        },
+        {
+          "type": "lyric_mode",
+          "named": true
+        },
+        {
+          "type": "lyrics_to",
           "named": true
         },
         {
@@ -2504,6 +2682,10 @@
       "required": false,
       "types": [
         {
+          "type": "add_lyrics",
+          "named": true
+        },
+        {
           "type": "alternative",
           "named": true
         },
@@ -2569,6 +2751,26 @@
         },
         {
           "type": "ligature_start",
+          "named": true
+        },
+        {
+          "type": "lyric_extender",
+          "named": true
+        },
+        {
+          "type": "lyric_hyphen",
+          "named": true
+        },
+        {
+          "type": "lyric_mode",
+          "named": true
+        },
+        {
+          "type": "lyric_word",
+          "named": true
+        },
+        {
+          "type": "lyrics_to",
           "named": true
         },
         {
@@ -2725,6 +2927,10 @@
       "required": false,
       "types": [
         {
+          "type": "add_lyrics",
+          "named": true
+        },
+        {
           "type": "alternative",
           "named": true
         },
@@ -2790,6 +2996,26 @@
         },
         {
           "type": "ligature_start",
+          "named": true
+        },
+        {
+          "type": "lyric_extender",
+          "named": true
+        },
+        {
+          "type": "lyric_hyphen",
+          "named": true
+        },
+        {
+          "type": "lyric_mode",
+          "named": true
+        },
+        {
+          "type": "lyric_word",
+          "named": true
+        },
+        {
+          "type": "lyrics_to",
           "named": true
         },
         {
@@ -2931,6 +3157,10 @@
       "required": false,
       "types": [
         {
+          "type": "add_lyrics",
+          "named": true
+        },
+        {
           "type": "alternative",
           "named": true
         },
@@ -3024,6 +3254,14 @@
         },
         {
           "type": "ligature_start",
+          "named": true
+        },
+        {
+          "type": "lyric_mode",
+          "named": true
+        },
+        {
+          "type": "lyrics_to",
           "named": true
         },
         {
@@ -3399,6 +3637,10 @@
     "named": false
   },
   {
+    "type": "\\addlyrics",
+    "named": false
+  },
+  {
     "type": "\\alias",
     "named": false
   },
@@ -3460,6 +3702,18 @@
   },
   {
     "type": "\\longa",
+    "named": false
+  },
+  {
+    "type": "\\lyricmode",
+    "named": false
+  },
+  {
+    "type": "\\lyrics",
+    "named": false
+  },
+  {
+    "type": "\\lyricsto",
     "named": false
   },
   {
@@ -3599,6 +3853,18 @@
     "type": "line_comment",
     "named": true,
     "extra": true
+  },
+  {
+    "type": "lyric_extender",
+    "named": true
+  },
+  {
+    "type": "lyric_hyphen",
+    "named": true
+  },
+  {
+    "type": "lyric_word",
+    "named": true
   },
   {
     "type": "markup_word",

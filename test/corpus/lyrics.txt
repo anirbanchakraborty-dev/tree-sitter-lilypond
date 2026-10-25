@@ -1,0 +1,570 @@
+================================================================================
+A lyric line with hyphens and an extender
+================================================================================
+
+\lyricmode { a4 -- mi tO -- may bha -- lO __ si }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (lyric_mode
+    (sequential_music
+      (lyric_word)
+      (duration
+        (number))
+      (lyric_hyphen)
+      (lyric_word)
+      (lyric_word)
+      (lyric_hyphen)
+      (lyric_word)
+      (lyric_word)
+      (lyric_hyphen)
+      (lyric_word)
+      (lyric_extender)
+      (lyric_word))))
+
+================================================================================
+A digit ends a lyric word
+================================================================================
+
+\lyricmode { ab4cd }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (lyric_mode
+    (sequential_music
+      (lyric_word)
+      (duration
+        (number))
+      (lyric_word))))
+
+================================================================================
+Hyphens and underscores inside a word belong to it
+================================================================================
+
+\lyricmode { a--b a_b a__ __b --a a-- ___ _ }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (lyric_mode
+    (sequential_music
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word))))
+
+================================================================================
+A percent sign inside a word is literal
+================================================================================
+
+\lyricmode { ab%cd % a comment
+  e }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (lyric_mode
+    (sequential_music
+      (lyric_word)
+      (line_comment)
+      (lyric_word))))
+
+================================================================================
+Bengali syllables are words
+================================================================================
+
+\lyricmode { আমি তো -- মায় ভা -- লো __ বাসি }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (lyric_mode
+    (sequential_music
+      (lyric_word)
+      (lyric_word)
+      (lyric_hyphen)
+      (lyric_word)
+      (lyric_word)
+      (lyric_hyphen)
+      (lyric_word)
+      (lyric_extender)
+      (lyric_word))))
+
+================================================================================
+Punctuation starts and continues a word
+================================================================================
+
+\lyricmode { <a (b ~c 'd !e :f ,g [h ^i -l /n >q )r ]s a. b= c| d* a~b - < > <<a b>> }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (lyric_mode
+    (sequential_music
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word)
+      (lyric_word))))
+
+================================================================================
+Braces and double angle brackets standing alone
+================================================================================
+
+\lyricmode { a{b c}d << { e } { f } >> }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (lyric_mode
+    (sequential_music
+      (lyric_word)
+      (sequential_music
+        (lyric_word)
+        (lyric_word))
+      (lyric_word)
+      (simultaneous_music
+        (sequential_music
+          (lyric_word))
+        (sequential_music
+          (lyric_word))))))
+
+================================================================================
+Lyrics after music
+================================================================================
+
+{ c d } \addlyrics { a b }
+{ c d } \addlyrics << { a b } { c d } >>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))
+    (note
+      pitch: (pitch
+        (note_name))))
+  (add_lyrics
+    (sequential_music
+      (lyric_word)
+      (lyric_word)))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))
+    (note
+      pitch: (pitch
+        (note_name))))
+  (add_lyrics
+    (simultaneous_music
+      (sequential_music
+        (lyric_word)
+        (lyric_word))
+      (sequential_music
+        (lyric_word)
+        (lyric_word)))))
+
+================================================================================
+Lyrics from a variable
+================================================================================
+
+words = \lyricmode { a b }
+{ c d } \addlyrics \words
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (lyric_mode
+      (sequential_music
+        (lyric_word)
+        (lyric_word))))
+  (sequential_music
+    (note
+      pitch: (pitch
+        (note_name)))
+    (note
+      pitch: (pitch
+        (note_name))))
+  (add_lyrics
+    (command)))
+
+================================================================================
+Two verses in a score after a variable
+================================================================================
+
+melody = { c d }
+\score { \melody \addlyrics { a b } \addlyrics { c d } }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))
+      (note
+        pitch: (pitch
+          (note_name)))))
+  (score_block
+    (command)
+    (add_lyrics
+      (sequential_music
+        (lyric_word)
+        (lyric_word)))
+    (add_lyrics
+      (sequential_music
+        (lyric_word)
+        (lyric_word)))))
+
+================================================================================
+Lyrics in an assignment after a context and after braces
+================================================================================
+
+x = \new Voice { c } \addlyrics { a }
+y = { c } \addlyrics { a }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (new_context
+      type: (identifier))
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name))))
+    value: (add_lyrics
+      (sequential_music
+        (lyric_word))))
+  (assignment
+    name: (identifier)
+    value: (sequential_music
+      (note
+        pitch: (pitch
+          (note_name))))
+    value: (add_lyrics
+      (sequential_music
+        (lyric_word)))))
+
+================================================================================
+Lyrics set to a voice
+================================================================================
+
+<< \new Voice = "melody" { c d } \new Lyrics \lyricsto "melody" { a b } >>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (simultaneous_music
+    (new_context
+      type: (identifier)
+      name: (string))
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))
+      (note
+        pitch: (pitch
+          (note_name))))
+    (new_context
+      type: (identifier))
+    (lyrics_to
+      voice: (string)
+      (sequential_music
+        (lyric_word)
+        (lyric_word)))))
+
+================================================================================
+A voice named by a word or a variable, and lyrics from a variable
+================================================================================
+
+words = \lyricmode { a }
+v = "melody"
+<< \new Voice = "melody" { c d } \new Lyrics \lyricsto melody { a b } \new Lyrics \lyricsto \v \words >>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (lyric_mode
+      (sequential_music
+        (lyric_word))))
+  (assignment
+    name: (identifier)
+    value: (string))
+  (simultaneous_music
+    (new_context
+      type: (identifier)
+      name: (string))
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))
+      (note
+        pitch: (pitch
+          (note_name))))
+    (new_context
+      type: (identifier))
+    (lyrics_to
+      voice: (identifier)
+      (sequential_music
+        (lyric_word)
+        (lyric_word)))
+    (new_context
+      type: (identifier))
+    (lyrics_to
+      voice: (command)
+      (command))))
+
+================================================================================
+A voice named with its context type
+================================================================================
+
+v = "melody"
+<< \new Voice = "melody" { c d } \new Lyrics \lyricsto Voice = "melody" { a b } \new Lyrics \lyricsto Voice = melody { a } \new Lyrics \lyricsto Voice = \v << { a } { b } >> >>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (string))
+  (simultaneous_music
+    (new_context
+      type: (identifier)
+      name: (string))
+    (sequential_music
+      (note
+        pitch: (pitch
+          (note_name)))
+      (note
+        pitch: (pitch
+          (note_name))))
+    (new_context
+      type: (identifier))
+    (lyrics_to
+      type: (identifier)
+      voice: (string)
+      (sequential_music
+        (lyric_word)
+        (lyric_word)))
+    (new_context
+      type: (identifier))
+    (lyrics_to
+      type: (identifier)
+      voice: (identifier)
+      (sequential_music
+        (lyric_word)))
+    (new_context
+      type: (identifier))
+    (lyrics_to
+      type: (identifier)
+      voice: (command)
+      (simultaneous_music
+        (sequential_music
+          (lyric_word))
+        (sequential_music
+          (lyric_word))))))
+
+================================================================================
+Lyric mode cannot follow lyricsto
+:error
+================================================================================
+
+<< \new Voice = "melody" { c } \new Lyrics \lyricsto "melody" \lyricmode { a } >>
+
+--------------------------------------------------------------------------------
+
+================================================================================
+Lyric mode cannot follow addlyrics
+:error
+================================================================================
+
+{ c d } \addlyrics \lyricmode { a b }
+
+--------------------------------------------------------------------------------
+
+================================================================================
+Lyrics need music before them
+:error
+================================================================================
+
+\addlyrics { a }
+
+--------------------------------------------------------------------------------
+
+================================================================================
+Commands, strings and Scheme in lyric mode
+================================================================================
+
+\lyricmode { \set stanza = "1." a \skip 4 "quoted" #"scheme" }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (lyric_mode
+    (sequential_music
+      (set
+        path: (property_path
+          (identifier))
+        value: (string))
+      (lyric_word)
+      (command)
+      (duration
+        (number))
+      (string)
+      (scheme
+        (scheme_string)))))
+
+================================================================================
+Property commands, tempo, markup, repeats and contexts in lyric mode
+================================================================================
+
+\lyricmode { \override LyricText.color = #red a \tempo 4 = 60 b \revert LyricText.color \markup { x } \repeat volta 2 { c } \alternative { { d } { e } } \new Lyrics { f } }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (lyric_mode
+    (sequential_music
+      (override
+        path: (property_path
+          (identifier)
+          (identifier))
+        value: (scheme
+          (scheme_symbol)))
+      (lyric_word)
+      (tempo
+        unit: (duration
+          (number))
+        bpm: (number))
+      (lyric_word)
+      (revert
+        path: (property_path
+          (identifier)
+          (identifier)))
+      (markup
+        (markup_block
+          (markup_word)))
+      (repeat
+        type: (identifier)
+        count: (number))
+      (sequential_music
+        (lyric_word))
+      (alternative
+        (sequential_music
+          (lyric_word))
+        (sequential_music
+          (lyric_word)))
+      (new_context
+        type: (identifier))
+      (sequential_music
+        (lyric_word)))))
+
+================================================================================
+Nested lyric mode and the sequential and simultaneous keywords
+================================================================================
+
+\lyricmode \sequential { a \lyricmode { b } { c } \addlyrics { d } \simultaneous { e } }
+\lyrics { f }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (lyric_mode
+    (sequential_music
+      (lyric_word)
+      (lyric_mode
+        (sequential_music
+          (lyric_word)))
+      (sequential_music
+        (lyric_word))
+      (add_lyrics
+        (sequential_music
+          (lyric_word)))
+      (simultaneous_music
+        (lyric_word))))
+  (lyric_mode
+    (sequential_music
+      (lyric_word))))
+
+================================================================================
+A time signature in lyric mode is a fraction
+================================================================================
+
+\lyricmode { \time 3/4 a /4 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (lyric_mode
+    (sequential_music
+      (command)
+      (fraction
+        numerator: (number)
+        denominator: (number))
+      (lyric_word)
+      (lyric_word)
+      (duration
+        (number)))))
+
+================================================================================
+Lyric words inside embedded LilyPond
+================================================================================
+
+x = #(list #{ \lyricmode { ab } #})
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    name: (identifier)
+    value: (scheme
+      (scheme_list
+        (scheme_symbol)
+        (embedded_lilypond
+          (lyric_mode
+            (sequential_music
+              (lyric_word))))))))
+
+================================================================================
+A percent sign ends a lyric word inside embedded LilyPond
+:error
+================================================================================
+
+x = #(list #{ \lyricmode { ab%cd } #})
+
+--------------------------------------------------------------------------------

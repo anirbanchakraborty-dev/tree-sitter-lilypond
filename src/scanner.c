@@ -9,7 +9,8 @@
 //
 // It also emits `_assignment_start`, a zero-width token, where a name and then
 // `=` lie ahead. The parser has one token of lookahead, which cannot see past
-// the name to the `=`.
+// the name to the `=`. And it reads lyric words, whose end depends on whether
+// the word sits inside `#{ #}`.
 
 #include "tree_sitter/parser.h"
 
@@ -179,6 +180,43 @@ static bool pass_assignment_name(TSLexer *lexer) {
     return lexer->lookahead != '\'' && lexer->lookahead != ',';
 }
 
+// A character that ends a lyric word. A digit is one, so `a4` is a word and its
+// duration. Inside `#{ #}` the Scheme reader sees a `%` before LilyPond does,
+// and to the reader it starts a comment.
+static bool ends_lyric_word(TSLexer *lexer, bool embedded) {
+    int32_t c = lexer->lookahead;
+    return lexer->eof(lexer) || is_space(c) || is_digit(c) || c == '$' || c == '#' || c == '{' ||
+           c == '}' || c == '"' || c == '\\' || (embedded && c == '%');
+}
+
+// A lyric word: anything up to an ending character, where the first character
+// is not one of `% | * . =` either. A word that is exactly `--`, `__`, `<<` or
+// `>>` is the token of that name instead. A `/` that touches a number before it
+// and a digit after it divides a fraction, as in `\time 3/4`.
+static bool scan_lyric_word(TSLexer *lexer, bool embedded, bool spaced) {
+    int32_t first = lexer->lookahead;
+    if (ends_lyric_word(lexer, embedded) || first == '%' || first == '|' || first == '*' ||
+        first == '.' || first == '=') {
+        return false;
+    }
+    lexer->advance(lexer, false);
+    int32_t second = lexer->lookahead;
+    unsigned length = 1;
+    while (!ends_lyric_word(lexer, embedded)) {
+        lexer->advance(lexer, false);
+        length++;
+    }
+    if (length == 2 && first == second &&
+        (first == '-' || first == '_' || first == '<' || first == '>')) {
+        return false;
+    }
+    if (length == 1 && first == '/' && !spaced && is_digit(lexer->lookahead)) {
+        return false;
+    }
+    lexer->result_symbol = LYRIC_WORD;
+    return true;
+}
+
 bool tree_sitter_lilypond_external_scanner_scan(void *payload, TSLexer *lexer,
                                                 const bool *valid_symbols) {
     Scanner *scanner = payload;
@@ -193,10 +231,12 @@ bool tree_sitter_lilypond_external_scanner_scan(void *payload, TSLexer *lexer,
     bool want_end = valid_symbols[EMBEDDED_END] && scanner->depth > 0;
     bool want_comment = valid_symbols[SCHEME_BLOCK_COMMENT];
     bool want_assignment = valid_symbols[ASSIGNMENT_START];
-    if (!want_start && !want_end && !want_comment && !want_assignment) {
+    bool want_lyric = valid_symbols[LYRIC_WORD];
+    if (!want_start && !want_end && !want_comment && !want_assignment && !want_lyric) {
         return false;
     }
 
+    bool spaced = is_space(lexer->lookahead);
     skip_whitespace(lexer);
 
     // Marking the end before looking ahead keeps the token zero-width, so the
@@ -208,7 +248,7 @@ bool tree_sitter_lilypond_external_scanner_scan(void *payload, TSLexer *lexer,
     }
 
     if (lexer->lookahead != '#') {
-        return false;
+        return want_lyric && scan_lyric_word(lexer, scanner->depth > 0, spaced);
     }
     lexer->advance(lexer, false);
 

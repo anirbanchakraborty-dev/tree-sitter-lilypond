@@ -577,8 +577,20 @@
         "type": "CHOICE",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "_value_end"
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_value_end"
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "add_lyrics"
+                }
+              }
+            ]
           },
           {
             "type": "SYMBOL",
@@ -624,16 +636,37 @@
               {
                 "type": "REPEAT",
                 "content": {
-                  "type": "SYMBOL",
-                  "name": "_music_argument"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_music_argument"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "add_lyrics"
+                    }
+                  ]
                 }
               },
               {
                 "type": "CHOICE",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "_value_end"
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "_value_end"
+                      },
+                      {
+                        "type": "REPEAT",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "add_lyrics"
+                        }
+                      }
+                    ]
                   },
                   {
                     "type": "BLANK"
@@ -659,6 +692,14 @@
         {
           "type": "SYMBOL",
           "name": "markup"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyric_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyrics_to"
         },
         {
           "type": "SYMBOL",
@@ -733,8 +774,20 @@
         "type": "CHOICE",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "_toplevel_end"
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_toplevel_end"
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "add_lyrics"
+                }
+              }
+            ]
           },
           {
             "type": "SYMBOL",
@@ -763,6 +816,10 @@
                     {
                       "type": "SYMBOL",
                       "name": "_toplevel_end"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "add_lyrics"
                     }
                   ]
                 }
@@ -811,6 +868,14 @@
         {
           "type": "SYMBOL",
           "name": "markup"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyric_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyrics_to"
         }
       ]
     },
@@ -832,6 +897,18 @@
         {
           "type": "SYMBOL",
           "name": "markup"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyric_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyrics_to"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "add_lyrics"
         }
       ]
     },
@@ -2094,6 +2171,369 @@
         ]
       }
     },
+    "lyric_mode": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "\\lyricmode"
+            },
+            {
+              "type": "STRING",
+              "value": "\\lyrics"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_lyric_music"
+        }
+      ]
+    },
+    "add_lyrics": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "\\addlyrics"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_lyric_music"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "command"
+            }
+          ]
+        }
+      ]
+    },
+    "lyrics_to": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "\\lyricsto"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "FIELD",
+                  "name": "type",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_identifier"
+                  }
+                },
+                {
+                  "type": "STRING",
+                  "value": "="
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "FIELD",
+          "name": "voice",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "string"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_identifier"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "command"
+              }
+            ]
+          }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_lyric_music"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "command"
+            }
+          ]
+        }
+      ]
+    },
+    "_lyric_music": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_lyric_sequential"
+          },
+          "named": true,
+          "value": "sequential_music"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_lyric_simultaneous"
+          },
+          "named": true,
+          "value": "simultaneous_music"
+        }
+      ]
+    },
+    "_lyric_sequential": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "\\sequential"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_lyric_item"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "_lyric_simultaneous": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "<<"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_lyric_item"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": ">>"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "\\simultaneous"
+            },
+            {
+              "type": "STRING",
+              "value": "{"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_lyric_item"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": "}"
+            }
+          ]
+        }
+      ]
+    },
+    "_lyric_item": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_lyric_word"
+          },
+          "named": true,
+          "value": "lyric_word"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyric_hyphen"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyric_extender"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "duration"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "fraction"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "scheme"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "markup"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "bar_check"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "voice_separator"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "command"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "dotted_name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "new_context"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "override"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "set"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "revert"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "unset"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "repeat"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_lyric_alternative"
+          },
+          "named": true,
+          "value": "alternative"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "tempo"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "change"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_lyric_music"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyric_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lyrics_to"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "add_lyrics"
+        }
+      ]
+    },
+    "_lyric_alternative": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "\\alternative"
+        },
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_lyric_item"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "lyric_hyphen": {
+      "type": "STRING",
+      "value": "--"
+    },
+    "lyric_extender": {
+      "type": "STRING",
+      "value": "__"
+    },
     "markup": {
       "type": "SEQ",
       "members": [
@@ -2836,6 +3276,22 @@
       {
         "type": "STRING",
         "value": "\\change"
+      },
+      {
+        "type": "STRING",
+        "value": "\\lyricmode"
+      },
+      {
+        "type": "STRING",
+        "value": "\\lyrics"
+      },
+      {
+        "type": "STRING",
+        "value": "\\addlyrics"
+      },
+      {
+        "type": "STRING",
+        "value": "\\lyricsto"
       }
     ]
   }

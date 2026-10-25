@@ -63,7 +63,10 @@ export default grammar({
   word: $ => $.command,
 
   reserved: {
-    global: _ => ['\\override', '\\set', '\\revert', '\\unset', '\\tempo', '\\change'],
+    global: _ => [
+      '\\override', '\\set', '\\revert', '\\unset', '\\tempo', '\\change',
+      '\\lyricmode', '\\lyrics', '\\addlyrics', '\\lyricsto',
+    ],
   },
 
   rules: {
@@ -192,19 +195,26 @@ export default grammar({
     // A value is complete after braces, a block, markup, a string, a Scheme
     // datum, or a number with its unit. Anything else starts a run of music
     // arguments, which ends at the first complete value or, without one, runs
-    // on into whatever follows.
+    // on into whatever follows. Verses added with `\addlyrics` may follow the
+    // music in either form.
     _value: $ => prec.right(choice(
-      $._value_end,
+      seq($._value_end, repeat($.add_lyrics)),
       $.string,
       $.scheme,
       seq($.number, optional(alias($._unit, $.command))),
-      seq($._value_start, repeat($._music_argument), optional($._value_end)),
+      seq(
+        $._value_start,
+        repeat(choice($._music_argument, $.add_lyrics)),
+        optional(seq($._value_end, repeat($.add_lyrics))),
+      ),
     )),
 
     _value_end: $ => choice(
       $.sequential_music,
       $.simultaneous_music,
       $.markup,
+      $.lyric_mode,
+      $.lyrics_to,
       $.header_block,
       $.paper_block,
       $.layout_block,
@@ -228,10 +238,13 @@ export default grammar({
     // as in `\fn { c } "x"`. `\score { c }` holds bare notes and so keeps
     // `_music`.
     _toplevel_music: $ => prec.right(choice(
-      $._toplevel_end,
+      seq($._toplevel_end, repeat($.add_lyrics)),
       $.scheme,
       $.bar_check,
-      seq($._toplevel_start, repeat(choice($._music_argument, $._toplevel_end))),
+      seq(
+        $._toplevel_start,
+        repeat(choice($._music_argument, $._toplevel_end, $.add_lyrics)),
+      ),
     )),
 
     _toplevel_start: $ => choice(
@@ -246,16 +259,21 @@ export default grammar({
       $.sequential_music,
       $.simultaneous_music,
       $.markup,
+      $.lyric_mode,
+      $.lyrics_to,
     ),
 
     // A music sequence is flat: events, the post-events that follow them, the
     // bar checks between them and each command with its arguments are all
-    // siblings.
+    // siblings. A verse added with `\addlyrics` is one more sibling.
     _music: $ => choice(
       $._music_argument,
       $.sequential_music,
       $.simultaneous_music,
       $.markup,
+      $.lyric_mode,
+      $.lyrics_to,
+      $.add_lyrics,
     ),
 
     // What a command can take as an argument without ending an assignment's
@@ -491,6 +509,78 @@ export default grammar({
         metronomeMark($),
       ),
     )),
+
+    // `\lyricmode` and `\lyrics` switch to lyric mode for the braces or
+    // `<< >>` that follow. Inside, those keep their usual names and hold
+    // lyric items.
+    lyric_mode: $ => seq(choice('\\lyricmode', '\\lyrics'), $._lyric_music),
+
+    // `\addlyrics` and `\lyricsto` switch to lyric mode only for braces or
+    // `<< >>`. A variable after either stays a `command`.
+    add_lyrics: $ => seq('\\addlyrics', choice($._lyric_music, $.command)),
+
+    // The voice may come with its context type, as in `\lyricsto Staff = "S"`.
+    lyrics_to: $ => seq(
+      '\\lyricsto',
+      optional(seq(field('type', $._identifier), '=')),
+      field('voice', choice($.string, $._identifier, $.command)),
+      choice($._lyric_music, $.command),
+    ),
+
+    _lyric_music: $ => choice(
+      alias($._lyric_sequential, $.sequential_music),
+      alias($._lyric_simultaneous, $.simultaneous_music),
+    ),
+
+    _lyric_sequential: $ => seq(
+      optional('\\sequential'),
+      '{',
+      repeat($._lyric_item),
+      '}',
+    ),
+
+    _lyric_simultaneous: $ => choice(
+      seq('<<', repeat($._lyric_item), '>>'),
+      seq('\\simultaneous', '{', repeat($._lyric_item), '}'),
+    ),
+
+    // Lyric mode changes only how words are read. A digit still starts a
+    // duration and a backslash a command, so the keyword constructs stand
+    // here as they do in music.
+    _lyric_item: $ => choice(
+      alias($._lyric_word, $.lyric_word),
+      $.lyric_hyphen,
+      $.lyric_extender,
+      $.duration,
+      $.fraction,
+      $.string,
+      $.scheme,
+      $.markup,
+      $.bar_check,
+      $.voice_separator,
+      $.command,
+      $.dotted_name,
+      $.new_context,
+      $.override,
+      $.set,
+      $.revert,
+      $.unset,
+      $.repeat,
+      alias($._lyric_alternative, $.alternative),
+      $.tempo,
+      $.change,
+      $._lyric_music,
+      $.lyric_mode,
+      $.lyrics_to,
+      $.add_lyrics,
+    ),
+
+    _lyric_alternative: $ => seq('\\alternative', '{', repeat($._lyric_item), '}'),
+
+    // Only standing alone. Touching a word, as in `a--b`, each is part of it.
+    lyric_hyphen: _ => '--',
+
+    lyric_extender: _ => '__',
 
     // Provisional: the markup task replaces these under the same names.
     markup: $ => seq('\\markup', $._markup_argument),
